@@ -1,6 +1,8 @@
 package com.portnum.number.store.response;
 
+import com.portnum.number.common.utils.DateUtils;
 import com.portnum.number.store.domain.Store;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
@@ -22,7 +24,7 @@ public class StoreOneResponse {
   /**
    * 팝업 키워드
    */
-  private List<String> keywordList;
+  private List<String> keywords;
   /**
    * 팝업 지역
    */
@@ -42,7 +44,7 @@ public class StoreOneResponse {
   /**
    * 팝업 이미지
    */
-  private String images;
+  private List<String> images;
   /**
    * 설명
    */
@@ -58,14 +60,16 @@ public class StoreOneResponse {
 
   public StoreOneResponse(Store store) {
     this.name = store.getName();
-    this.keywordList = Arrays.stream(store.getKeywords().split(",")).toList();
+    this.keywords = Arrays.stream(store.getKeywords().split(",")).toList();
     this.neighborhood = store.getNeighborhood();
     this.category = store.getCategory();
     this.address = store.getAddress();
     this.addressDetail = store.getAddressDetail();
-    this.images = store.getImages();
+    this.images = Arrays.stream(store.getImages().split(",")).toList();
     this.description = store.getDescription();
     this.businessPeriod = store.getStartDate() + " - " + store.getEndDate();
-    this.businessHours = store.getStartTime() + " ~ " + store.getEndTime();
+    this.businessHours =
+        DateUtils.getDayOfWeek(LocalDate.now()) + " " + store.getStartTime() + " ~ "
+            + store.getEndTime();
   }
 }
