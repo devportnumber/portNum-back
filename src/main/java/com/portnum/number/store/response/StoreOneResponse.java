@@ -66,6 +66,10 @@ public class StoreOneResponse {
    */
   private String description;
   /**
+   * map url
+   */
+  private String mapUrl;
+  /**
    * 팝업 이미지
    */
   private List<String> images;
@@ -88,6 +92,7 @@ public class StoreOneResponse {
     this.neighborhood = store.getNeighborhood();
     this.keywords = Arrays.stream(store.getKeywords().split(",")).toList();
     this.description = store.getDescription();
+    this.mapUrl = store.getMapUrl();
     this.images = Arrays.stream(store.getImages().split(",")).toList();
     this.regdt = store.getRegDt().toLocalDate().toString();
   }
