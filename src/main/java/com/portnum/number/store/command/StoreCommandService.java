@@ -37,7 +37,7 @@ public class StoreCommandService {
   private Store makeStoreEntity(StoreEntryRequest param) {
     return new Store(param.getName(), param.getKeywords(), param.getNeighborhood(),
         param.getCategory(), param.getLongitude(), param.getLatitude(), param.getAddress(),
-        param.getAddressDetail(), param.getImages(), param.getDescription(), param.getStartDate(),
+        param.getAddressDetail(), param.getImages(), param.getDescription(), param.getMapUrl(), param.getStartDate(),
         param.getEndDate(), param.getStartTime(), param.getEndTime());
   }
 }

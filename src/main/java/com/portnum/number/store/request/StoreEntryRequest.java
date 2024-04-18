@@ -53,6 +53,10 @@ public class StoreEntryRequest {
    */
   private String description;
   /**
+   * map url
+   */
+  private String mapUrl;
+  /**
    * 영업 시작 일자
    */
   private String startDate;

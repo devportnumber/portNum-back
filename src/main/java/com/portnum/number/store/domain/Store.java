@@ -84,6 +84,11 @@ public class Store {
   @Column(name = "description", nullable = false)
   private String description;
   /**
+   * map url
+   */
+  @Column(name = "map_url", nullable = false)
+  private String mapUrl;
+  /**
    * 영업 시작 일자
    */
   @Column(name = "start_date", nullable = false)
@@ -111,7 +116,7 @@ public class Store {
   private LocalDateTime regDt;
 
   public Store(String name, String keywords, String neighborhood, String category, String longitude,
-      String latitude, String address, String addressDetail, String images, String description,
+      String latitude, String address, String addressDetail, String images, String description, String mapUrl,
       String startDate, String endDate, String startTime, String endTime) {
     this.name = name;
     this.keywords = keywords;
@@ -123,6 +128,7 @@ public class Store {
     this.addressDetail = addressDetail;
     this.images = images;
     this.description = description;
+    this.mapUrl = mapUrl;
     this.startDate = startDate;
     this.endDate = endDate;
     this.startTime = startTime;
