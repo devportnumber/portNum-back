@@ -1,6 +1,7 @@
 package com.portnum.number.store.query;
 
 import com.portnum.number.common.domain.enums.Valid;
+import com.portnum.number.store.domain.Store;
 import com.portnum.number.store.repository.StoreRepository;
 import com.portnum.number.store.response.StoreListResponse;
 import java.util.List;
@@ -30,5 +31,15 @@ public class StoreListService {
         .filter(it -> it.getValid().equals(Valid.TRUE))
         .map(StoreListResponse::new)
         .toList();
+  }
+
+  /**
+   * 팝업 엔티티 목록 조회
+   *
+   * @return 팝업 엔티티 목록
+   */
+  @Transactional(readOnly = true)
+  public List<Store> getStoreList() {
+    return storeRepository.findAll();
   }
 }
