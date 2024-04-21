@@ -1,8 +1,11 @@
 package com.portnum.number.store.command;
 
+import com.portnum.number.common.domain.enums.Valid;
 import com.portnum.number.store.domain.Store;
+import com.portnum.number.store.query.StoreOneService;
 import com.portnum.number.store.repository.StoreRepository;
 import com.portnum.number.store.request.StoreEntryRequest;
+import com.portnum.number.store.request.StoreValidRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +21,27 @@ public class StoreCommandService {
 
   private final StoreRepository storeRepository;
 
+  private final StoreOneService storeOneService;
+
   /**
    * 팝업 등록
    *
    * @param param 팝업 정보
    */
   @Transactional
-  public void entry(StoreEntryRequest param) {
+  public void save(StoreEntryRequest param) {
     storeRepository.save(makeStoreEntity(param));
+  }
+
+  /**
+   * 팝업 유효여부 수정
+   *
+   * @param param 수정 정보
+   */
+  @Transactional
+  public void update(StoreValidRequest param) {
+    Store store = storeOneService.getStore(param.getStoreId());
+    store.updateValid(Valid.fromCode(param.getValid()));
   }
 
   /**

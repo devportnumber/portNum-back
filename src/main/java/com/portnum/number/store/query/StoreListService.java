@@ -1,5 +1,6 @@
 package com.portnum.number.store.query;
 
+import com.portnum.number.common.domain.enums.Valid;
 import com.portnum.number.store.repository.StoreRepository;
 import com.portnum.number.store.response.StoreListResponse;
 import java.util.List;
@@ -26,6 +27,7 @@ public class StoreListService {
   @Transactional(readOnly = true)
   public List<StoreListResponse> getList() {
     return storeRepository.findAll().stream()
+        .filter(it -> it.getValid().equals(Valid.TRUE))
         .map(StoreListResponse::new)
         .toList();
   }
