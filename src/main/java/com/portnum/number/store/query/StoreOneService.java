@@ -35,7 +35,8 @@ public class StoreOneService {
    * @param storeId 팝업 ID
    * @return 팝업 엔티티
    */
-  private Store getStore(Integer storeId) {
+  @Transactional(readOnly = true)
+  public Store getStore(Integer storeId) {
     return storeRepository.findById(storeId)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팝업 ID입니다."));
   }

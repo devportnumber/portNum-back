@@ -1,6 +1,8 @@
 package com.portnum.number.store.domain;
 
+import com.portnum.number.common.domain.enums.Valid;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -109,6 +111,12 @@ public class Store {
   @Column(name = "end_time", nullable = false)
   private String endTime;
   /**
+   * 유효여부
+   */
+  @Convert(converter = Valid.TypeCodeConverter.class)
+  @Column(name = "valid", nullable = false)
+  private Valid valid = Valid.TRUE;
+  /**
    * 등록 일시
    */
   @CreatedDate
@@ -133,5 +141,9 @@ public class Store {
     this.endDate = endDate;
     this.startTime = startTime;
     this.endTime = endTime;
+  }
+
+  public void updateValid(Valid valid) {
+    this.valid = valid;
   }
 }
