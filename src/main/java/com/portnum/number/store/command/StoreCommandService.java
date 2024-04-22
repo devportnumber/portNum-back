@@ -2,13 +2,20 @@ package com.portnum.number.store.command;
 
 import com.portnum.number.common.domain.enums.Valid;
 import com.portnum.number.store.domain.Store;
+import com.portnum.number.store.domain.StoreImage;
 import com.portnum.number.store.query.StoreOneService;
 import com.portnum.number.store.repository.StoreRepository;
 import com.portnum.number.store.request.StoreEntryRequest;
+import com.portnum.number.store.request.StoreImageAddRequest;
 import com.portnum.number.store.request.StoreValidRequest;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 팝업 등록/수정/삭제 서비스
@@ -30,7 +37,30 @@ public class StoreCommandService {
    */
   @Transactional
   public void save(StoreEntryRequest param) {
-    storeRepository.save(makeStoreEntity(param));
+    Store store = storeRepository.save(makeStoreEntity(param));
+
+    // 이미지 엔티티 생성
+    AtomicInteger order = new AtomicInteger(1);
+    List<StoreImage> imageList =
+        param.getImageUrlList().stream().map(url -> new StoreImage(url, order.getAndIncrement())).toList();
+    store.addImageList(imageList);
+  }
+
+  /**
+   * 팝업 이미지 추가 등록
+   *
+   * @param param 등록 정보
+   */
+  @Transactional
+  public void save(StoreImageAddRequest param) {
+    Store store = storeOneService.getStore(param.getStoreId());
+
+    // 이미지 엔티티 생성
+    AtomicInteger order = new AtomicInteger(store.getImageList().isEmpty() ? 1 :
+        store.getImageList().stream().mapToInt(StoreImage::getSeq).max().orElse(0) + 1);
+    List<StoreImage> imageList =
+        param.getImageUrlList().stream().map(url -> new StoreImage(url, order.getAndIncrement())).toList();
+    store.addImageList(imageList);
   }
 
   /**
@@ -51,9 +81,8 @@ public class StoreCommandService {
    * @return 팝업 엔티티
    */
   private Store makeStoreEntity(StoreEntryRequest param) {
-    return new Store(param.getName(), param.getKeywords(), param.getNeighborhood(),
-        param.getCategory(), param.getLongitude(), param.getLatitude(), param.getAddress(),
-        param.getAddressDetail(), param.getImages(), param.getDescription(), param.getMapUrl(), param.getStartDate(),
-        param.getEndDate(), param.getStartTime(), param.getEndTime());
+    return new Store(param.getName(), param.getKeywords(), param.getNeighborhood(), param.getCategory(),
+        param.getLongitude(), param.getLatitude(), param.getAddress(), param.getAddressDetail(), param.getDescription(),
+        param.getMapUrl(), param.getStartDate(), param.getEndDate(), param.getStartTime(), param.getEndTime());
   }
 }

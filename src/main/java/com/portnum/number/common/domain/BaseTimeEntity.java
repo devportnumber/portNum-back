@@ -1,12 +1,15 @@
 package com.portnum.number.common.domain;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * 공통 시간 엔티티
@@ -27,7 +30,7 @@ public class BaseTimeEntity {
   /**
    * 수정일시
    */
-  @CreatedDate
+  @LastModifiedDate
   @Column(name = "updated_dt", nullable = false)
-  protected LocalDateTime updatedDt;
+  protected LocalDateTime updatedDt = LocalDateTime.now();
 }

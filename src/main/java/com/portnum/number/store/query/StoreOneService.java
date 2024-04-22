@@ -1,11 +1,14 @@
 package com.portnum.number.store.query;
 
+import com.portnum.number.common.domain.enums.Valid;
 import com.portnum.number.store.domain.Store;
 import com.portnum.number.store.repository.StoreRepository;
 import com.portnum.number.store.response.StoreOneResponse;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 팝업 단일 조회 서비스
@@ -37,7 +40,7 @@ public class StoreOneService {
    */
   @Transactional(readOnly = true)
   public Store getStore(Integer storeId) {
-    return storeRepository.findById(storeId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팝업 ID입니다."));
+    return storeRepository.findByStoreIdAndValid(storeId, Valid.TRUE)
+                          .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팝업 ID입니다."));
   }
 }

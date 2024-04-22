@@ -1,5 +1,7 @@
 package com.portnum.number.store.request;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,9 +47,9 @@ public class StoreEntryRequest {
    */
   private String addressDetail;
   /**
-   * 팝업 이미지
+   * 팝업 이미지 url 목록
    */
-  private String images;
+  private List<String> imageUrlList;
   /**
    * 설명
    */

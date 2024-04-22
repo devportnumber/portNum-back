@@ -2,9 +2,13 @@ package com.portnum.number.store.response;
 
 import com.portnum.number.common.utils.DateUtils;
 import com.portnum.number.store.domain.Store;
+import com.portnum.number.store.domain.StoreImage;
+
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+
 import lombok.Getter;
 import lombok.ToString;
 
@@ -82,8 +86,7 @@ public class StoreOneResponse {
     this.id = store.getStoreId();
     this.category = store.getCategory();
     this.dates = store.getStartDate() + " - " + store.getEndDate();
-    this.time = DateUtils.getDayOfWeek(LocalDate.now()) + " " + store.getStartTime() + " ~ "
-        + store.getEndTime();
+    this.time = DateUtils.getDayOfWeek(LocalDate.now()) + " " + store.getStartTime() + " ~ " + store.getEndTime();
     this.name = store.getName();
     this.longitude = store.getLongitude();
     this.latitude = store.getLatitude();
@@ -93,7 +96,11 @@ public class StoreOneResponse {
     this.keywords = Arrays.stream(store.getKeywords().split(",")).toList();
     this.description = store.getDescription();
     this.mapUrl = store.getMapUrl();
-    this.images = Arrays.stream(store.getImages().split(",")).toList();
+    this.images = store.getImageList()
+                       .stream()
+                       .sorted(Comparator.comparingInt(StoreImage::getSeq))
+                       .map(StoreImage::getUrl)
+                       .toList();
     this.regdt = store.getRegDt().toLocalDate().toString();
   }
 }

@@ -4,8 +4,9 @@ import com.portnum.number.store.command.StoreCommandService;
 import com.portnum.number.store.query.StoreListService;
 import com.portnum.number.store.query.StoreOneService;
 import com.portnum.number.store.request.StoreEntryRequest;
+import com.portnum.number.store.request.StoreImageAddRequest;
 import com.portnum.number.store.request.StoreValidRequest;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 팝업 API
@@ -56,6 +59,15 @@ public class StoreController {
    */
   @PostMapping
   public ResponseEntity<?> doPost(@RequestBody StoreEntryRequest param) {
+    storeCommandService.save(param);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  /**
+   * 팝업 이미지 추가 등록
+   */
+  @PostMapping("/image")
+  public ResponseEntity<?> doPostImage(@RequestBody StoreImageAddRequest param) {
     storeCommandService.save(param);
     return new ResponseEntity<>(HttpStatus.OK);
   }
