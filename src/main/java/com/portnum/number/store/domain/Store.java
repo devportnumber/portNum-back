@@ -1,20 +1,30 @@
 package com.portnum.number.store.domain;
 
 import com.portnum.number.common.domain.enums.Valid;
+
+import org.hibernate.annotations.SQLRestriction;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * 팝업 엔티티
@@ -76,11 +86,6 @@ public class Store {
   @Column(name = "address_detail", nullable = false)
   private String addressDetail;
   /**
-   * 팝업 이미지
-   */
-  @Column(name = "images", nullable = false)
-  private String images;
-  /**
    * 설명
    */
   @Column(name = "description", nullable = false)
@@ -122,10 +127,16 @@ public class Store {
   @CreatedDate
   @Column(name = "reg_dt", updatable = false, nullable = false)
   private LocalDateTime regDt;
+  /**
+   * 팝업 이미지 목록
+   */
+  @OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @SQLRestriction("valid = 'Y'")
+  private final List<StoreImage> imageList = new ArrayList<>();
 
-  public Store(String name, String keywords, String neighborhood, String category, String longitude,
-      String latitude, String address, String addressDetail, String images, String description, String mapUrl,
-      String startDate, String endDate, String startTime, String endTime) {
+  public Store(String name, String keywords, String neighborhood, String category, String longitude, String latitude,
+      String address, String addressDetail, String description, String mapUrl, String startDate, String endDate,
+      String startTime, String endTime) {
     this.name = name;
     this.keywords = keywords;
     this.neighborhood = neighborhood;
@@ -134,13 +145,26 @@ public class Store {
     this.latitude = latitude;
     this.address = address;
     this.addressDetail = addressDetail;
-    this.images = images;
     this.description = description;
     this.mapUrl = mapUrl;
     this.startDate = startDate;
     this.endDate = endDate;
     this.startTime = startTime;
     this.endTime = endTime;
+  }
+
+  /**
+   * 팝업 이미지 저장
+   */
+  public void addImageList(List<StoreImage> addImageList) {
+    if (Objects.isNull(addImageList) || addImageList.isEmpty()) {
+      return;
+    }
+
+    for (StoreImage image : addImageList) {
+      this.imageList.add(image);
+      image.setStore(this);
+    }
   }
 
   public void updateValid(Valid valid) {
