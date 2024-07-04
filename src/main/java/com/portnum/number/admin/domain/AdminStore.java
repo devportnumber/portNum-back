@@ -33,8 +33,7 @@ public class AdminStore {
     @Column(name = "stat", nullable = true)
     private String stat;
 
-    public AdminStore(Integer storeId, String name, String category, String startDate, String endDate, String stat) {
-        this.storeId = storeId;
+    public AdminStore(String name, String category, String startDate, String endDate, String stat) {
         this.name = name;
         this.category = category;
         this.startDate = startDate;
