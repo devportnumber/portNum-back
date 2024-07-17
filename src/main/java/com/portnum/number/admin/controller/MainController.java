@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * admin API
  *
@@ -49,5 +50,6 @@ public class MainController {
     public void update(@RequestBody AdminStore adminStore) {
         adminListService.update(adminStore.getStoreId(), adminStore);
     }
+
 
 }

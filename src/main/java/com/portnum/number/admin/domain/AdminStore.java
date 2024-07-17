@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners({AuditingEntityListener.class})
