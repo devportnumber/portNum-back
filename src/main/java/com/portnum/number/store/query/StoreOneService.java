@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.beans.Transient;
+
 /**
  * 팝업 단일 조회 서비스
  *
