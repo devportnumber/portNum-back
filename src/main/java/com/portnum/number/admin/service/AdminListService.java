@@ -24,8 +24,8 @@ public class AdminListService {
 
     @Transactional(readOnly = true)
     public List<AdminStore> getAdminFilterList(String name, String category, String startDate, String endDate, String stat){
-        return adminRepository.findByNameOrCategoryOrStartDateOrEndDateOrStat(name, category, startDate, endDate, stat);
-//        return adminRepository.findByFilter(name, category, startDate, endDate, stat);
+        //return adminRepository.findByNameOrCategoryOrStartDateOrEndDateOrStat(name, category, startDate, endDate, stat);
+        return adminRepository.findByfilter(name, category, startDate, endDate, stat);
     }
 
 //    @Transactional(readOnly = true)

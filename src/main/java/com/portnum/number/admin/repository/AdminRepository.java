@@ -27,6 +27,15 @@ public interface AdminRepository extends JpaRepository<AdminStore, Integer> {
 
     List<AdminStore> findByNameOrCategoryOrStartDateOrEndDateOrStat(String name, String category, String startDate, String endDate, String stat);
 
+    @Query(value = "SELECT id, name, category, start_date, end_date, stat\n" +
+                    " FROM store s\n" +
+                    "WHERE (:name is null or s.name = :name)\n" +
+                    "  AND (:category is null or s.category = :category)\n" +
+                    "  AND (:startDate is null or s.startDate = :startDate)\n" +
+                    "  AND (:endDate is null or s.endDate = :endDate)\n" +
+                    "  AND (:stat is null or s.stat = :stat)" , nativeQuery = true)
+    List<AdminStore> findByfilter(String name, String category, String startDate, String endDate, String stat);
+
     @Transactional
     public void deleteById(Integer id);
 }
