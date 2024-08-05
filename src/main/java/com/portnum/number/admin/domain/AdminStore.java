@@ -19,7 +19,7 @@ public class AdminStore {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer storeId;
+    private int storeId;
 
     @Column(name = "name", nullable = false)
     private String name;

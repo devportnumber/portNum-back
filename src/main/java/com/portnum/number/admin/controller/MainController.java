@@ -1,15 +1,14 @@
 package com.portnum.number.admin.controller;
 
 import com.portnum.number.admin.domain.AdminStore;
+import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.admin.service.AdminListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -23,6 +22,7 @@ import java.util.List;
 public class MainController {
 
     private final AdminListService adminListService;
+    private final AdminRepository adminRepository;
 
     @GetMapping("/list")
     public ResponseEntity<?> doGetAsList() {
@@ -37,18 +37,27 @@ public class MainController {
     }
 
     @PostMapping("/del")
-    public void deleteById(@RequestBody Integer id) {
-        adminListService.deleteById(id);
+    @Transactional
+    public String deleteById(@RequestBody AdminStore adminStore) {
+        String result;
+        if(adminRepository.findById(adminStore.getStoreId()).isPresent()){
+            adminRepository.deleteById(adminStore.getStoreId());
+            result = "success";
+        }
+        else result = "fail";
+        return result;
     }
 
     @PostMapping("/save")
-    public void save(@RequestBody AdminStore adminStore){
+    public ResponseEntity<String> save(@RequestBody AdminStore adminStore){
         adminListService.save(adminStore);
+        return new ResponseEntity<>("200", HttpStatus.OK);
     }
 
     @PostMapping("/update")
-    public void update(@RequestBody AdminStore adminStore) {
+    public ResponseEntity<String> update(@RequestBody AdminStore adminStore) {
         adminListService.update(adminStore.getStoreId(), adminStore);
+        return new ResponseEntity<>("200", HttpStatus.OK);
     }
 
 

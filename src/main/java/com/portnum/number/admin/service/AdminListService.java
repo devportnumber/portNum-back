@@ -33,7 +33,8 @@ public class AdminListService {
 //        return adminRepository.findAll();
 //    }
 
-    public void deleteById(Integer id){
+    @Transactional
+    public void deleteById(int id){
          adminRepository.deleteById(id);
     }
 
