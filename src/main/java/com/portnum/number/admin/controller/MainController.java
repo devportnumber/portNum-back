@@ -10,6 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 
 /**
  * admin API
@@ -38,10 +43,12 @@ public class MainController {
 
     @PostMapping("/del")
     @Transactional
-    public String deleteById(@RequestBody AdminStore adminStore) {
-        String result;
-        if(adminRepository.findById(adminStore.getStoreId()).isPresent()){
-            adminRepository.deleteById(adminStore.getStoreId());
+    public String deleteById(@RequestBody List<AdminStore> adminStore) {
+        String result="";
+        if(adminRepository.findById(adminStore.get(0).getStoreId()).isPresent()){
+            for(int i =0; i<adminStore.size(); i++){
+                adminRepository.deleteById(adminStore.get(i).getStoreId());
+            }
             result = "success";
         }
         else result = "fail";
