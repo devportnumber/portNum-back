@@ -1,6 +1,6 @@
-package com.portnum.number.common.domain.converter;
+package com.portnum.number.global.common.domain.converter;
 
-import com.portnum.number.common.domain.enums.Codable;
+import com.portnum.number.global.common.domain.enums.Codable;
 import jakarta.persistence.AttributeConverter;
 import org.springframework.util.StringUtils;
 

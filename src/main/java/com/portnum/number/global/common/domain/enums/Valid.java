@@ -1,6 +1,6 @@
-package com.portnum.number.common.domain.enums;
+package com.portnum.number.global.common.domain.enums;
 
-import com.portnum.number.common.domain.converter.AbstractEnumCodeConverter;
+import com.portnum.number.global.common.domain.converter.AbstractEnumCodeConverter;
 import jakarta.persistence.Converter;
 import java.util.EnumSet;
 import lombok.Getter;

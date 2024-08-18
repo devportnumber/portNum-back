@@ -1,4 +1,4 @@
-package com.portnum.number.common.domain.enums;
+package com.portnum.number.global.common.domain.enums;
 
 import java.util.stream.Stream;
 

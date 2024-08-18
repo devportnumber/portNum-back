@@ -1,4 +1,4 @@
-package com.portnum.number.common.domain;
+package com.portnum.number.global.common.domain;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
