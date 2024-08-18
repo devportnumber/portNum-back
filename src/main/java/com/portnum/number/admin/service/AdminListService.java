@@ -1,21 +1,19 @@
 package com.portnum.number.admin.service;
 
-import com.portnum.number.admin.domain.AdminStore;
-import com.portnum.number.admin.repository.AdminRepository;
+import com.portnum.number.admin.entity.AdminStore;
+import com.portnum.number.admin.repository.AdminOrgRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 @Service
 public class AdminListService {
 
-    private final AdminRepository adminRepository;
+    private final AdminOrgRepository adminRepository;
 
     @Transactional(readOnly = true)
     public List<AdminStore> getAdminList(){
@@ -52,12 +50,12 @@ public class AdminListService {
                 return new IllegalArgumentException("update 실패");
             }
         });
+
         if(updateStore.getName() != null) findStore.setName(updateStore.getName());
         if(updateStore.getCategory() != null) findStore.setCategory(updateStore.getCategory());
         if(updateStore.getStartDate() != null) findStore.setStartDate(updateStore.getStartDate());
         if(updateStore.getEndDate() != null) findStore.setEndDate(updateStore.getEndDate());
         if(updateStore.getStat() != null) findStore.setStat(updateStore.getStat());
-
         if(updateStore.getNeighborhood() != null) findStore.setNeighborhood(updateStore.getNeighborhood());
         if(updateStore.getLongitude() != null) findStore.setLongitude(updateStore.getLongitude());
         if(updateStore.getLatitude() != null) findStore.setLatitude(updateStore.getLatitude());

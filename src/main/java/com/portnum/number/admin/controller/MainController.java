@@ -1,7 +1,7 @@
 package com.portnum.number.admin.controller;
 
-import com.portnum.number.admin.domain.AdminStore;
-import com.portnum.number.admin.repository.AdminRepository;
+import com.portnum.number.admin.entity.AdminStore;
+import com.portnum.number.admin.repository.AdminOrgRepository;
 import com.portnum.number.admin.service.AdminListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 
 /**
@@ -27,7 +24,7 @@ import java.util.Objects;
 public class MainController {
 
     private final AdminListService adminListService;
-    private final AdminRepository adminRepository;
+    private final AdminOrgRepository adminRepository;
 
     @GetMapping("/list")
     public ResponseEntity<?> doGetAsList() {

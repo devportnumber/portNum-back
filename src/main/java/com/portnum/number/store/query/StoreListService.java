@@ -1,6 +1,6 @@
 package com.portnum.number.store.query;
 
-import com.portnum.number.common.domain.enums.Valid;
+import com.portnum.number.global.common.domain.enums.Valid;
 import com.portnum.number.store.domain.Store;
 import com.portnum.number.store.repository.StoreRepository;
 import com.portnum.number.store.response.StoreListResponse;

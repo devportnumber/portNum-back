@@ -1,7 +1,7 @@
 package com.portnum.number.store.domain;
 
-import com.portnum.number.common.domain.BaseTimeEntity;
-import com.portnum.number.common.domain.enums.Valid;
+import com.portnum.number.global.common.domain.BaseTimeEntity;
+import com.portnum.number.global.common.domain.enums.Valid;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

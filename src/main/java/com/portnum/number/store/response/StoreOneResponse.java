@@ -1,6 +1,6 @@
 package com.portnum.number.store.response;
 
-import com.portnum.number.common.utils.DateUtils;
+import com.portnum.number.global.common.utils.DateUtils;
 import com.portnum.number.store.domain.Store;
 import com.portnum.number.store.domain.StoreImage;
 

@@ -1,4 +1,4 @@
-package com.portnum.number.admin.domain;
+package com.portnum.number.admin.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
