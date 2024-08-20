@@ -38,7 +38,8 @@ public class Admin extends BaseTimeEntity {
     private String phone;
 
     @Column(nullable = false)
-    private boolean deleted = Boolean.FALSE;
+    private Boolean deleted = Boolean.FALSE;
+
 
     /* 생성 메서드 */
     public static Admin of(AdminCreateRequest request){
@@ -53,6 +54,7 @@ public class Admin extends BaseTimeEntity {
     /* 수정 메서드 */
     private void modifyAdmin(AdminCreateRequest request){
         this.email = request.getEmail();
+        System.out.println("=====================" + request.getEmail());
         this.nickName = request.getNickName();
         this.name = request.getName();
         this.profileUrl = request.getProfileUrl();

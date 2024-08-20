@@ -5,6 +5,7 @@ import com.portnum.number.admin.dto.request.AdminCreateRequest;
 import com.portnum.number.admin.dto.request.AdminModifyRequest;
 import com.portnum.number.admin.dto.response.AdminInfoResponse;
 import com.portnum.number.admin.repository.AdminRepository;
+import com.portnum.number.global.common.service.ImageUploadService;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminCommandService {
 
     private final AdminRepository adminRepository;
+
+    private final ImageUploadService imageUploadService;
 
     public AdminInfoResponse create(AdminCreateRequest request){
         Admin newAdmin = Admin.of(request);
@@ -31,9 +34,16 @@ public class AdminCommandService {
     public AdminInfoResponse modify(AdminModifyRequest request) {
         Admin findAdmin = validateAdmin(request.getAdminId());
 
+        updateAdminProfile(findAdmin.getProfileUrl(), request.getProfileUrl());
         findAdmin.modifyAdmin(request);
 
         return AdminInfoResponse.of(findAdmin);
+    }
+
+    private void updateAdminProfile(String existProfileUrl, String newProfileUrl) {
+        if(existProfileUrl != null && newProfileUrl != null){
+            imageUploadService.deleteImage(existProfileUrl);
+        }
     }
 
     private Admin validateAdmin(Long adminId) {

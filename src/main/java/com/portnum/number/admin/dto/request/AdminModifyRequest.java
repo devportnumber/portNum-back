@@ -7,17 +7,13 @@ import lombok.Getter;
 @Getter
 public class AdminModifyRequest {
 
-    @NotNull
     private Long adminId;
 
-    @NotBlank
     private String nickName;
 
-    @NotBlank
     private String name;
 
     private String profileUrl;
 
-    @NotBlank
     private String phone;
 }
