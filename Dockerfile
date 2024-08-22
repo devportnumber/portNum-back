@@ -17,4 +17,8 @@ COPY --from=corretto-jdk /jre $JAVA_HOME
 
 COPY build/libs/*.jar app.jar
 
-ENTRYPOINT ["java","-XX:MaxRAMPercentage=80.0","-Dspring.profiles.active=dev","-jar","/app.jar"]
+# Jasypt 암호화 비밀번호를 위한 ARG 및 ENV 설정
+ARG JASYPT_ENCRYPTOR_PASSWORD
+ENV JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=80.0", "-Dspring.profiles.active=dev", "-Djasypt.encryptor.password=${JASYPT_ENCRYPTOR_PASSWORD}", "-jar", "/app.jar"]
