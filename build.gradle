@@ -45,6 +45,9 @@ dependencies {
 
 	/* h2 */
 	runtimeOnly 'com.h2database:h2'
+
+	/* jasypt */
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 }
 
 tasks.named('test') {
