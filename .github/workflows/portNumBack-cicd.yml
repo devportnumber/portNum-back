@@ -49,7 +49,7 @@ jobs:
           distribution: 'temurin'
   
       - name: Grant execute permission for gradlew
-        run: chmod +x ./src/gradlew
+        run: chmod +x ./gradlew
   
       - name: Create application.yml
         run: |
@@ -58,7 +58,6 @@ jobs:
       - name: Project build
         env:
           jasypt.encryptor.password: ${{ secrets.JASYPT_PASSWORD }}
-        working-directory: ./src
         run: ./gradlew clean build -x test
         shell: bash
   
