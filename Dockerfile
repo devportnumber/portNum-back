@@ -22,3 +22,4 @@ ARG JASYPT_ENCRYPTOR_PASSWORD
 ENV JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
 
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=80.0", "-Dspring.profiles.active=dev", "-Djasypt.encryptor.password=${JASYPT_ENCRYPTOR_PASSWORD}", "-jar", "/app.jar"]
+
