@@ -82,7 +82,11 @@ public class S3PreSignedUrlProvider {
     @Async
     public void deleteImageByPath(String imagePath) {
         try {
-            amazonS3Client.deleteObject(bucket, imagePath);
+            // URL에서 key 추출
+            String key = imagePath.substring(imagePath.indexOf("image/"));
+
+            log.info("key = {}", key);
+            amazonS3Client.deleteObject(bucket, key);
         } catch (AmazonServiceException e) {
             log.error("이미지 삭제 실패했습니다. {}", e.getMessage());
             throw new IllegalStateException("이미지 삭제 실패했습니다.");

@@ -92,7 +92,7 @@ public class PopupCommandService {
             validatePopupImage(image, request.getPopupId());
 
             imageUploadService.deleteImage(image.getImgUrl());
-            image.modifyUrl(image.getImgUrl());
+            image.modifyUrl(imageResponse.getImgUrl());
 
             images.add(ImageResponse.of(image));
         }
@@ -129,12 +129,9 @@ public class PopupCommandService {
 
     private void saveImages(Popup popup, List<ImageRequest> images) {
         if(images != null){
-            images.stream()
-                    .map(
-                            imageRequest -> imageRepository.save(
-                                    Image.of(popup, imageRequest.getImgUrl())
-                            )
-                    );
+            images.forEach(imageRequest -> imageRepository.save(
+                            Image.of(popup, imageRequest.getImgUrl())
+                    ));
         }
     }
 

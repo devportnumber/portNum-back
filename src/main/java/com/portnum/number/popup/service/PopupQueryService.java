@@ -1,11 +1,11 @@
 package com.portnum.number.popup.service;
 
-import com.portnum.number.admin.entity.Admin;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.global.common.dto.response.PageResponseDto;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;
 import com.portnum.number.popup.dto.PopupSearchCondition;
+import com.portnum.number.popup.dto.response.PopupDetailResponse;
 import com.portnum.number.popup.dto.response.PopupInfoResponse;
 import com.portnum.number.popup.entity.Popup;
 import com.portnum.number.popup.repository.PopupRepository;
@@ -37,9 +37,18 @@ public class PopupQueryService {
         return PageResponseDto.of(popups, PopupInfoResponse :: of);
     }
 
+    public PopupDetailResponse readPopupInfo(Long adminId, Long popupId) {
+        validateAdmin(adminId);
+
+        Popup findPopup = popupRepository.getPopupDetail(popupId)
+                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Amdin"));
+
+        return PopupDetailResponse.of(findPopup);
+    }
+
     private void validateAdmin(Long adminId) {
-        adminRepository.findById(adminId)
-                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin"));
+        if(!adminRepository.existsById(adminId))
+            throw new GlobalException(Code.NOT_FOUND, "Not Found Admin");
     }
 
 }
