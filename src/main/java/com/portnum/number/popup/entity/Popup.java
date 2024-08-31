@@ -1,6 +1,7 @@
 package com.portnum.number.popup.entity;
 
 import com.portnum.number.admin.entity.Admin;
+import com.portnum.number.global.common.converter.StringListConverter;
 import com.portnum.number.global.common.domain.BaseTimeEntity;
 import com.portnum.number.popup.dto.request.PopupCreateRequest;
 import com.portnum.number.popup.dto.request.PopupModifyRequest;
@@ -54,9 +55,15 @@ public class Popup extends BaseTimeEntity {
 
     private String description;
 
+    private String detailDescription;
+
     private String mapUrl;
 
     private String representImgUrl;
+
+    @Column(nullable = false, length = 1000)
+    @Convert(converter = StringListConverter.class)
+    private List<String> keywords;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id", nullable = false)
@@ -78,8 +85,6 @@ public class Popup extends BaseTimeEntity {
     public static Popup of(PopupCreateRequest request, Admin admin){
         Popup newPopup = new Popup();
 
-        System.out.println(request.getAddress());
-
         newPopup.modifyPopup(request, admin);
 
         return newPopup;
@@ -96,9 +101,11 @@ public class Popup extends BaseTimeEntity {
         this.stat = request.getStat();
         this.point = request.getPoint();
         this.description = request.getDescription();
+        this.detailDescription = request.getDetailDescription();
         this.mapUrl = request.getMapUrl();
-        this.admin = admin;
+        this.keywords = request.getKeywords();
         this.representImgUrl = request.getRepresentImgUrl();
+        this.admin = admin;
     }
 
     public void modifyPopup(PopupModifyRequest request){
@@ -110,14 +117,11 @@ public class Popup extends BaseTimeEntity {
         this.stat = request.getStat();
         this.point = request.getPoint();
         this.description = request.getDescription();
+        this.detailDescription = request.getDetailDescription();
         this.mapUrl = request.getMapUrl();
-//        this.images = request.getImages()
-//                .stream()
-//                .map(
-//                        image -> Image.of(this, image.getImgUrl())
-//                )
-//                .toList();
+        this.keywords = request.getKeywords();
     }
+
 
     public void modifyRepresentImgUrl(String representImgUrl){
         this.representImgUrl = representImgUrl;

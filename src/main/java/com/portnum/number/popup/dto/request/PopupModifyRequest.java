@@ -39,7 +39,11 @@ public class PopupModifyRequest {
 
     private String description;
 
+    private String detailDescription;
+
     private String mapUrl;
 
-    private List<ImageRequest> images;
+    private String representImgUrl;
+
+    private List<String> keywords;
 }

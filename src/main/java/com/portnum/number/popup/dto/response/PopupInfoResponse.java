@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -35,9 +36,13 @@ public class PopupInfoResponse {
 
     private String description;
 
+    private String detailDescription;
+
     private String mapUrl;
 
     private String representImgUrl;
+
+    private List<String> keywords;
 
     public static PopupInfoResponse of(Popup popup){
         return PopupInfoResponse.builder()
@@ -50,8 +55,10 @@ public class PopupInfoResponse {
                 .point(popup.getPoint())
                 .address(popup.getAddress())
                 .description(popup.getDescription())
+                .detailDescription(popup.getDetailDescription())
                 .mapUrl(popup.getMapUrl())
                 .representImgUrl(popup.getRepresentImgUrl())
+                .keywords(popup.getKeywords())
                 .build();
     }
 }

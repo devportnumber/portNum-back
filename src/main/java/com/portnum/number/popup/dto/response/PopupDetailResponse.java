@@ -34,11 +34,15 @@ public class PopupDetailResponse{
 
     private String description;
 
+    private String detailDescription;
+
     private String mapUrl;
 
     private String representImgUrl;
 
     private List<ImageResponse> images;
+
+    private List<String> keywords;
 
     public static PopupDetailResponse of(Popup popup){
         return PopupDetailResponse.builder()
@@ -51,9 +55,11 @@ public class PopupDetailResponse{
                 .point(popup.getPoint())
                 .address(popup.getAddress())
                 .description(popup.getDescription())
+                .detailDescription(popup.getDetailDescription())
                 .mapUrl(popup.getMapUrl())
                 .representImgUrl(popup.getRepresentImgUrl())
                 .images(popup.getImages().stream().map(ImageResponse::of).toList())
+                .keywords(popup.getKeywords())
                 .build();
     }
 }

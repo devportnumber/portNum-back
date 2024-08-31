@@ -38,9 +38,13 @@ public class PopupCreateRequest {
 
     private String description;
 
+    private String detailDescription;
+
     private String mapUrl;
 
     private String representImgUrl;
 
     private List<ImageRequest> images;
+
+    private List<String> keywords;
 }
