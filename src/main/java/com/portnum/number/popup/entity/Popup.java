@@ -122,6 +122,10 @@ public class Popup extends BaseTimeEntity {
         this.keywords = request.getKeywords();
     }
 
+    public void modifyPopupStatus(PopupStatus stat){
+        this.stat = stat;
+    }
+
 
     public void modifyRepresentImgUrl(String representImgUrl){
         this.representImgUrl = representImgUrl;
