@@ -1,6 +1,6 @@
 package com.portnum.number.global.common.config;
 
-import com.portnum.number.global.common.filter.QueryInspector;
+import com.portnum.number.global.filter.QueryInspector;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.cfg.AvailableSettings;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;

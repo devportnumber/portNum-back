@@ -1,4 +1,4 @@
-package com.portnum.number.global.common.utils;
+package com.portnum.number.global.utils;
 
 import org.springframework.stereotype.Component;
 

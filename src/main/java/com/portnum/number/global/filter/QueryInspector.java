@@ -1,4 +1,4 @@
-package com.portnum.number.global.common.filter;
+package com.portnum.number.global.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.resource.jdbc.spi.StatementInspector;

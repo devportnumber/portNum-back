@@ -23,10 +23,13 @@ public class Admin extends BaseTimeEntity {
     @Column(name = "admin_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, unique = true)
     private String nickName;
 
     @Column(nullable = false)
@@ -35,10 +38,10 @@ public class Admin extends BaseTimeEntity {
     private String profileUrl;
 
     @Column(nullable = false)
-    private String phone;
-
-    @Column(nullable = false)
     private Boolean deleted = Boolean.FALSE;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
 
 
     /* 생성 메서드 */

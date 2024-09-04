@@ -1,4 +1,4 @@
-package com.portnum.number.global.common.filter;
+package com.portnum.number.global.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

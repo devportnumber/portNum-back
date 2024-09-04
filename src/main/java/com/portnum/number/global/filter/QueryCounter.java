@@ -1,4 +1,4 @@
-package com.portnum.number.global.common.filter;
+package com.portnum.number.global.filter;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;

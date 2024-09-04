@@ -1,11 +1,9 @@
 package com.portnum.number.global.common.service;
 
-import com.portnum.number.global.common.domain.enums.Valid;
-import com.portnum.number.global.common.utils.DateUtils;
+import com.portnum.number.global.utils.DateUtils;
 import com.portnum.number.popup.entity.Popup;
 import com.portnum.number.popup.entity.PopupStatus;
 import com.portnum.number.popup.repository.PopupRepository;
-import com.portnum.number.store.domain.Store;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

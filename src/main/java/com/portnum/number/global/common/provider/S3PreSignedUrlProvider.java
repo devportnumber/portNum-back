@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.portnum.number.global.common.dto.response.PreSignedUrlResponse;
-import com.portnum.number.global.common.utils.IdentityGeneratorUtil;
+import com.portnum.number.global.utils.IdentityGeneratorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
