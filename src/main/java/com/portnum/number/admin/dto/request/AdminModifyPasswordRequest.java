@@ -5,11 +5,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class AdminModifyRequest {
+public class AdminModifyPasswordRequest {
 
+    @NotNull
     private Long adminId;
 
-    private String name;
+    @NotBlank
+    private String oldPassword;
 
-    private String profileUrl;
+    @NotBlank
+    private String newPassword;
 }

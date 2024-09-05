@@ -29,7 +29,7 @@ import java.util.List;
 public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private static final List<String> EXCLUDE_URL =
-            List.of("/", "/h2", "/auth/login", "/auth/reissue", "/docs/index.html", "/admin/signup", "/admin/valid");
+            List.of("/", "/h2", "/auth/login", "/auth/reissue", "/docs/index.html", "/admin/signup", "/admin/valid", "/admin/lost");
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;

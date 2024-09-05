@@ -65,9 +65,11 @@ public class Admin extends BaseTimeEntity {
     }
 
     public void modifyAdmin(AdminModifyRequest request){
-        this.nickName = request.getNickName();
         this.name = request.getName();
         this.profileUrl = request.getProfileUrl();
     }
 
+    public void modifyPassword(String password) {
+        this.password = password;
+    }
 }

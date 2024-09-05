@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/admin/signup", "/admin/health", "/admin/popup/api/**", "/admin/valid/**").permitAll()
+                                .requestMatchers("/admin/signup", "/admin/health", "/admin/popup/api/**", "/admin/valid/**", "/admin/lost/**").permitAll()
                                 .anyRequest().hasAnyRole("USER", "ADMIN")
                 );
 //        httpSecurity

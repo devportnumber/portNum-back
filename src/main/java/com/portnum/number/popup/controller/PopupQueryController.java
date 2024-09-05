@@ -35,7 +35,7 @@ public class PopupQueryController {
     }
 
     @Secured("ROLE_ADMIN")
-    @GetMapping
+    @GetMapping("/supervisor")
     public DataResponseDto portNumAdminRead(
             @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
             PopupSearchCondition searchCondition

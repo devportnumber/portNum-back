@@ -17,4 +17,10 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     @Query("select count(a) > 0 from Admin a where a.nickName = :nickName and a.deleted = false")
     boolean existsByNickName(String nickName);
+
+    @Query("select count(a) > 0 from Admin a where a.email = :email and a.nickName = :nickName and a.deleted = false")
+    boolean existsByEmailWithNickName(String email, String nickName);
+
+    @Query("select a from Admin a where a.email = :email and a.nickName = :nickName and a.deleted = false")
+    Optional<Admin> findByEmailWithNickName(String email, String nickName);
 }
