@@ -1,6 +1,7 @@
 package com.portnum.number.popup.controller;
 
 import com.portnum.number.global.common.dto.response.DataResponseDto;
+import com.portnum.number.global.security.GetEmailFromToken;
 import com.portnum.number.popup.dto.request.*;
 import com.portnum.number.popup.dto.response.ImageResponse;
 import com.portnum.number.popup.dto.response.PopupInfoResponse;
@@ -26,36 +27,36 @@ public class PopupCommandController {
     }
 
     @PatchMapping
-    public DataResponseDto modifyPopup(@Valid @RequestBody PopupModifyRequest request){
-        PopupInfoResponse response = popupCommandService.modify(request);
+    public DataResponseDto modifyPopup(@Valid @RequestBody PopupModifyRequest request, @GetEmailFromToken String email){
+        PopupInfoResponse response = popupCommandService.modify(request, email);
 
         return DataResponseDto.of(response);
     }
 
     @DeleteMapping
-    public DataResponseDto removePopup(@Valid @RequestBody PopupRemoveRequest request){
-        popupCommandService.remove(request);
+    public DataResponseDto removePopup(@Valid @RequestBody PopupRemoveRequest request, @GetEmailFromToken String email){
+        popupCommandService.remove(request, email);
 
         return DataResponseDto.of("Popup remove Success");
     }
 
     @PostMapping("/img")
-    public DataResponseDto addImages(@Valid @RequestBody ImageAddRequest request){
-        PopupInfoResponse response = popupCommandService.addImages(request);
+    public DataResponseDto addImages(@Valid @RequestBody ImageAddRequest request, @GetEmailFromToken String email){
+        PopupInfoResponse response = popupCommandService.addImages(request, email);
 
         return DataResponseDto.of(response);
     }
 
     @PatchMapping("/img")
-    public DataResponseDto modifyImages(@Valid @RequestBody ImageModifyRequest request){
-        List<ImageResponse> response = popupCommandService.modifyImages(request);
+    public DataResponseDto modifyImages(@Valid @RequestBody ImageModifyRequest request, @GetEmailFromToken String email){
+        List<ImageResponse> response = popupCommandService.modifyImages(request, email);
 
         return DataResponseDto.of(response);
     }
 
     @DeleteMapping("/img")
-    public DataResponseDto removeImages(@Valid @RequestBody ImageRemoveRequest request){
-        popupCommandService.removeImages(request);
+    public DataResponseDto removeImages(@Valid @RequestBody ImageRemoveRequest request, @GetEmailFromToken String email){
+        popupCommandService.removeImages(request, email);
 
         return DataResponseDto.of("Image remove Success!");
     }

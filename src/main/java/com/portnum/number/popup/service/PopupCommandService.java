@@ -13,6 +13,7 @@ import com.portnum.number.popup.entity.Popup;
 import com.portnum.number.popup.repository.ImageRepository;
 import com.portnum.number.popup.repository.PopupRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,9 @@ public class PopupCommandService {
 
     private final ImageUploadService imageUploadService;
 
+    @Value("${portnumber.admin.email}")
+    private String adminEmail;
+
     public PopupInfoResponse create(PopupCreateRequest request) {
         Admin findAdmin = validateAdmin(request.getAdminId());
 
@@ -42,17 +46,17 @@ public class PopupCommandService {
         return PopupInfoResponse.of(newPopup);
     }
 
-    public PopupInfoResponse modify(PopupModifyRequest request) {
-        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId());
-
+    public PopupInfoResponse modify(PopupModifyRequest request, String email) {
+        System.out.println("====================" + email);
+        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), email);
         findPopup.modifyPopup(request);
 
         return PopupInfoResponse.of(findPopup);
     }
 
-    public void remove(PopupRemoveRequest request) {
+    public void remove(PopupRemoveRequest request, String email) {
         for(Long popupId : request.getPopupIds()){
-            Popup findPopup = validatePopupAdmin(popupId, request.getAdminId());
+            Popup findPopup = validatePopupAdmin(popupId, request.getAdminId(), email);
 
             List<Long> imgIds = findPopup.getImages()
                     .stream()
@@ -66,16 +70,16 @@ public class PopupCommandService {
     }
 
 
-    public PopupInfoResponse addImages(ImageAddRequest request) {
-        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId());
+    public PopupInfoResponse addImages(ImageAddRequest request, String email) {
+        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), email);
 
         saveImages(findPopup, request.getImages());
 
         return PopupInfoResponse.of(findPopup);
     }
 
-    public List<ImageResponse> modifyImages(ImageModifyRequest request) {
-        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId());
+    public List<ImageResponse> modifyImages(ImageModifyRequest request, String email) {
+        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), email);
 
         findPopup.modifyRepresentImgUrl(request.getRepresentUrl());
 
@@ -100,8 +104,8 @@ public class PopupCommandService {
         return images;
     }
 
-    public void removeImages(ImageRemoveRequest request) {
-        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId());
+    public void removeImages(ImageRemoveRequest request, String email) {
+        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), email);
 
         findPopup.modifyRepresentImgUrl(request.getRepresentUrl());
 
@@ -136,14 +140,16 @@ public class PopupCommandService {
     }
 
 
-    private Popup validatePopupAdmin(Long popupId, Long adminId){
+    private Popup validatePopupAdmin(Long popupId, Long adminId, String email){
         Popup popup = validatePopup(popupId);
 
-         if(!popup.getAdmin().getId().equals(adminId)){
-             throw new GlobalException(Code.VALIDATION_ERROR, "Not Admin About Forum");
-         } else{
-             return popup;
-         }
+        if(email.equals(adminEmail)){
+            return popup;
+        } else if(!popup.getAdmin().getId().equals(adminId)){
+            throw new GlobalException(Code.VALIDATION_ERROR, "Not Admin About Forum");
+        } else{
+            return popup;
+        }
     }
 
     private Popup validatePopup(Long popupId) {

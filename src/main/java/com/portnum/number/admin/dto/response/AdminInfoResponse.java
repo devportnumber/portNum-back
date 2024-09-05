@@ -19,7 +19,6 @@ public class AdminInfoResponse {
 
     private String profileUrl;
 
-    private String phone;
 
     public static AdminInfoResponse of(Admin admin){
         return AdminInfoResponse.builder()
@@ -28,7 +27,6 @@ public class AdminInfoResponse {
                 .nickName(admin.getNickName())
                 .name(admin.getName())
                 .profileUrl(admin.getProfileUrl())
-                .phone(admin.getPhone())
                 .build();
     }
 }

@@ -18,4 +18,12 @@ public class AdminQueryService {
         return adminRepository.findById(adminId)
                 .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin"));
     }
+
+    public boolean validateEmail(String email) {
+        return adminRepository.existsByEmail(email);
+    }
+
+    public boolean validateNickName(String nickName) {
+        return adminRepository.existsByNickName(nickName);
+    }
 }

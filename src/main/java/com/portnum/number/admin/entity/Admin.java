@@ -57,18 +57,17 @@ public class Admin extends BaseTimeEntity {
     /* 수정 메서드 */
     private void modifyAdmin(AdminCreateRequest request){
         this.email = request.getEmail();
-        System.out.println("=====================" + request.getEmail());
         this.nickName = request.getNickName();
         this.name = request.getName();
         this.profileUrl = request.getProfileUrl();
-        this.phone = request.getPhone();
+        this.roleType = RoleType.INFLUENCER;
+        this.password = request.getPassword();
     }
 
     public void modifyAdmin(AdminModifyRequest request){
         this.nickName = request.getNickName();
         this.name = request.getName();
         this.profileUrl = request.getProfileUrl();
-        this.phone = request.getPhone();
     }
 
 }

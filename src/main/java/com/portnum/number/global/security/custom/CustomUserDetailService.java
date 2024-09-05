@@ -20,7 +20,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
     private final AdminRepository adminRepository;
-    private final PasswordEncoder passwordEncoder;
 
     /**
      * loadByUsername() : 사용자 이름(email)을 입력받아 User에서 사용자 정보를 조회한다.
@@ -30,7 +29,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Admin findAdmin = adminRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
-        return CustomUserDetails.of(findAdmin.getEmail(), RoleType.INFLUENCER);
+        return CustomUserDetails.of(findAdmin.getEmail(), findAdmin.getRoleType(), findAdmin.getPassword());
     }
 
     private UserDetails createUserDetails(Admin admin){

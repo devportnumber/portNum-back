@@ -14,6 +14,4 @@ public class AdminModifyRequest {
     private String name;
 
     private String profileUrl;
-
-    private String phone;
 }

@@ -45,11 +45,40 @@ public class PopupCustomRepositoryImpl implements PopupCustomRepository {
         return PageableExecutionUtils.getPage(popups, pageable, countQuery::fetchOne);
     }
 
+    @Override
+    public Page<Popup> findAllPopup(Pageable pageable, PopupSearchCondition searchCondition) {
+        List<Popup> popups = jpaQueryFactory
+                .selectFrom(popup)
+                .where(allSearch(searchCondition))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // Count data
+        JPAQuery<Long> countQuery = jpaQueryFactory
+                .select(popup.count())
+                .from(popup)
+                .where(allSearch(searchCondition));
+
+        return PageableExecutionUtils.getPage(popups, pageable, countQuery::fetchOne);
+    }
+
     private BooleanExpression allSearch(Long adminId, PopupSearchCondition condition) {
         BooleanExpression result = popup.deleted.eq(Boolean.FALSE)
                 .and(popup.admin.id.eq(adminId));  // 기본 조건 설정
 
         // 각 조건을 체인에 추가 (null을 무시)
+        return getBooleanExpression(condition, result);
+    }
+
+    private BooleanExpression allSearch(PopupSearchCondition condition) {
+        BooleanExpression result = popup.deleted.eq(Boolean.FALSE); // 기본 조건 설정
+
+        // 각 조건을 체인에 추가 (null을 무시)
+        return getBooleanExpression(condition, result);
+    }
+
+    private BooleanExpression getBooleanExpression(PopupSearchCondition condition, BooleanExpression result) {
         if (StringUtils.hasText(condition.getName())) {
             result = result.and(popup.name.like("%" + condition.getName() + "%"));
         }

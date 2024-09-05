@@ -29,7 +29,7 @@ import java.util.List;
 public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private static final List<String> EXCLUDE_URL =
-            List.of("/", "/h2", "/users/signup", "/auth/login", "/auth/reissue", "/docs/index.html");
+            List.of("/", "/h2", "/auth/login", "/auth/reissue", "/docs/index.html", "/admin/signup", "/admin/valid");
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
@@ -43,26 +43,27 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         try {
             String accessToken = jwtTokenProvider.resolveAccessToken(request);
             String encryptedRefreshToken = jwtTokenProvider.resolveRefreshToken(request);
+//            boolean b = jwtTokenProvider.validateToken(accessToken, response);
+//            log.info("accessToken: {}, boolean: {}", accessToken, b);
 
-
-            if(StringUtils.hasText(accessToken) && doNotLogout(accessToken)
-                        && jwtTokenProvider.validateToken(accessToken, response)){
-                    setAuthenticationToContext(accessToken);
+            if(StringUtils.hasText(accessToken) && doNotLogout(accessToken) && jwtTokenProvider.validateToken(accessToken, response)){
+                    setAuthenticationToContext(accessToken, response);
             }
-            // TODO: 예외처리 리팩토링
         } catch (RuntimeException e) {
             ObjectMapper objectMapper = new ObjectMapper();
             response.setCharacterEncoding("utf-8");
             response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().write(objectMapper.writeValueAsString(new ResponseDto(false, Code.VALIDATION_ERROR.getCode(), "Not Valid AccessToken")));
+            return;
         }
         filterChain.doFilter(request, response);
     }
 
 
-    private void setAuthenticationToContext(String accessToken) {
-        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+    private void setAuthenticationToContext(String accessToken, HttpServletResponse response) throws java.io.IOException {
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken, response);
+        log.info("Authentication: {}", authentication);
 //        System.out.println(authentication.getPrincipal().toString());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         log.info("# Token verification success!");
@@ -70,6 +71,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private boolean doNotLogout(String accessToken) {
         String isLogout = redisService.getValues(accessToken);
+        log.info("isLogout: " + isLogout);
         return isLogout.equals("false");
     }
 

@@ -16,7 +16,7 @@ public class AdminCommandController {
 
     private final AdminCommandService adminCommandService;
 
-    @PostMapping
+    @PostMapping("/signup")
     public DataResponseDto addAdmin(@Valid @RequestBody AdminCreateRequest request){
         AdminInfoResponse response = adminCommandService.create(request);
 

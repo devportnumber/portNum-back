@@ -46,9 +46,19 @@ public class PopupQueryService {
         return PopupDetailResponse.of(findPopup);
     }
 
+    public PageResponseDto portNumAdminRead(int pageNo, PopupSearchCondition searchCondition) {
+        int page = pageNo == 0 ? 0 : pageNo - 1;
+        int pageLimit = 10;
+
+        Pageable pageable = PageRequest.of(page, pageLimit);
+
+        Page<Popup> popups = popupRepository.findAllPopup(pageable, searchCondition);
+
+        return PageResponseDto.of(popups, PopupInfoResponse :: of);
+    }
+
     private void validateAdmin(Long adminId) {
         if(!adminRepository.existsById(adminId))
             throw new GlobalException(Code.NOT_FOUND, "Not Found Admin");
     }
-
 }

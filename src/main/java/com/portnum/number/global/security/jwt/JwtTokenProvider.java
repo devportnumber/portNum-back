@@ -1,5 +1,6 @@
 package com.portnum.number.global.security.jwt;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portnum.number.admin.entity.RoleType;
 import com.portnum.number.global.common.dto.TokenDto;
@@ -110,14 +111,22 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼냄
-    public Authentication getAuthentication(String accessToken){
+    public Authentication getAuthentication(String accessToken, HttpServletResponse response) throws IOException {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
         if(claims.get(AUTHORITIES_KEY) == null){
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            sendErrorResponse(response, "Empty Authorized Token");
         }
 
-        RoleType role = (RoleType) claims.get(AUTHORITIES_KEY);
+
+        String roleString = (String) claims.get(AUTHORITIES_KEY);
+
+        RoleType role;
+        if(roleString.equals("ROLE_USER"))
+            role = RoleType.INFLUENCER;
+        else
+            role = RoleType.ADMIN;
+
 
         CustomUserDetails customUserDetails = CustomUserDetails.of(
                 claims.getSubject(), role);
@@ -137,22 +146,27 @@ public class JwtTokenProvider {
             log.info("Invalid JWT token");
             log.trace("Invalid JWT token trace = {}", e);
             sendErrorResponse(response, "손상된 토큰입니다.");
+            return false;
         } catch (ExpiredJwtException e){
             log.info("Expired JWT token");
             log.trace("Expired JWT token trace = {}", e);
             sendErrorResponse(response, "만료된 토큰입니다.");
+            return false;
         } catch (UnsupportedJwtException e){
             log.info("Unsupported JWT token");
             log.trace("Unsupported JWT token trace = {}", e);
             sendErrorResponse(response, "지원하지 않는 토큰입니다.");
+            return false;
         } catch(IllegalArgumentException e){
             log.info("JWT claims string is empty");
             log.trace("JWT claims string is empty trace = {}", e);
             sendErrorResponse(response, "시그니처 검증에 실패한 토큰입니다.");
+            return false;
         } catch(BadCredentialsException e){
             log.info("Login Info Error");
             log.trace("Login Info Error is empty trace = {}", e);
             sendErrorResponse(response, "로그인 정보가 잘못되었습니다.");
+            return false;
         }
         return true;
     }
@@ -178,7 +192,7 @@ public class JwtTokenProvider {
     public String resolveAccessToken(HttpServletRequest request){
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)){
-            return bearerToken.substring(7);
+            return bearerToken.split(BEARER_PREFIX)[1];
         }
 
         return null;
@@ -201,5 +215,9 @@ public class JwtTokenProvider {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(objectMapper.writeValueAsString(new ResponseDto(false, Code.UNAUTHORIZED.getCode(), message)));
+    }
+
+    public String getUserSubject(String token){
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
 }

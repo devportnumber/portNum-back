@@ -13,5 +13,9 @@ public class AdminCreateRequest {
 
     private String profileUrl;
 
-    private String phone;
+    private String password;
+
+    public void modifyPassword(String password){
+        this.password = password;
+    }
 }
