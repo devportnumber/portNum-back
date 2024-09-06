@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -34,7 +35,10 @@ public class LatencyLoggingFilter extends OncePerRequestFilter {
         int queryCount = queryInspector.getQueryCount();
         String requestURI = request.getRequestURI();
 
-        log.info("Latency : {}s, Query count : {}, Request URI : {}", latencyForSeconds, queryCount, requestURI);
+        if(!PatternMatchUtils.simpleMatch("/admin/health", requestURI)) {
+            log.info("Latency : {}s, Query count : {}, Request URI : {}", latencyForSeconds, queryCount, requestURI);
+        }
+
         MDC.clear();
     }
 }
