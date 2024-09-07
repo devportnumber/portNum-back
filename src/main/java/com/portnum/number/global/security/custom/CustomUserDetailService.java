@@ -29,7 +29,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Admin findAdmin = adminRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
-        return CustomUserDetails.of(findAdmin.getEmail(), findAdmin.getRoleType(), findAdmin.getPassword());
+        return CustomUserDetails.of(findAdmin);
     }
 
     private UserDetails createUserDetails(Admin admin){

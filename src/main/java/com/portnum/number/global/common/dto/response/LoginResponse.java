@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 public class LoginResponse{
 
+    private Long adminId;
     private String email;
     private String nickName;
     private String profileUrl;
