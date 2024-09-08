@@ -156,6 +156,11 @@ public class JwtTokenProvider {
             log.info("Unsupported JWT token");
             log.trace("Unsupported JWT token trace = {}", e);
             sendErrorResponse(response, "지원하지 않는 토큰입니다.");
+            //        String encryptedRefreshToken = jwtTokenProvider.resolveRefreshToken(request);
+//        String newAccessToken = authService.reissueAccessToken(encryptedRefreshToken);
+//        jwtTokenProvider.accessTokenSetHeader(newAccessToken, response);
+//
+//        return new ResponseEntity<>(new SingleResponseDto<>("Access Token reissued"), HttpStatus.OK);
             return false;
         } catch(IllegalArgumentException e){
             log.info("JWT claims string is empty");

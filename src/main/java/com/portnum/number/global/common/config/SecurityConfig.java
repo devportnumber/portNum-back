@@ -1,4 +1,4 @@
-package com.portnum.number.global.security;
+package com.portnum.number.global.common.config;
 
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.admin.service.AdminQueryService;
