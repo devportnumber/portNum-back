@@ -1,11 +1,25 @@
-# jdk17 Image Start
-FROM openjdk:17
+FROM amazoncorretto:17-alpine as corretto-jdk
+RUN apk add --no-cache binutils
+RUN jlink \
+    --add-modules ALL-MODULE-PATH \
+    --strip-debug \
+    --no-man-pages \
+    --no-header-files \
+    --compress=2 \
+    --output /jre
 
-# jar 파일 복제
+FROM alpine:latest
+
+ENV JAVA_HOME=/jre
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+COPY --from=corretto-jdk /jre $JAVA_HOME
+
 COPY build/libs/*.jar app.jar
 
-# 타임존 대한민국으로 설정
-ENV TZ=Asia/Seoul
+# Jasypt 암호화 비밀번호를 위한 ARG 및 ENV 설정
+ARG JASYPT_ENCRYPTOR_PASSWORD
+ENV JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
 
-# 실행 명령어
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=80.0", "-Dspring.profiles.active=dev", "-Djasypt.encryptor.password=${JASYPT_ENCRYPTOR_PASSWORD}", "-jar", "/app.jar"]
+

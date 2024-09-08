@@ -19,10 +19,44 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+	//===Spring Security===//
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+	//===Valid===//
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+
+	//===AWS S3===//
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	//=== QueryDSL dependencies 추가 ===//
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+	/* h2 */
+	runtimeOnly 'com.h2database:h2'
+
+	/* jasypt */
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
+	/* Redis 추가 */
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	/* SMTP 설정 */
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework:spring-context:6.1.4'
+	implementation 'org.springframework:spring-context-support:6.1.4'
+	implementation 'com.sun.mail:jakarta.mail:2.0.1'
 }
 
 tasks.named('test') {

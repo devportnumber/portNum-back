@@ -1,6 +1,6 @@
 package com.portnum.number.store.query;
 
-import com.portnum.number.common.domain.enums.Valid;
+import com.portnum.number.global.common.domain.enums.Valid;
 import com.portnum.number.store.domain.Store;
 import com.portnum.number.store.repository.StoreRepository;
 import com.portnum.number.store.response.StoreOneResponse;
@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-
-import java.beans.Transient;
 
 /**
  * 팝업 단일 조회 서비스
