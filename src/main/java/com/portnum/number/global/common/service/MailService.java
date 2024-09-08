@@ -1,5 +1,6 @@
 package com.portnum.number.global.common.service;
 
+import com.portnum.number.global.aop.annotation.Retry;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;
 import jakarta.mail.MessagingException;
@@ -20,6 +21,7 @@ public class MailService {
 
     private final JavaMailSender mailSender;
 
+    @Retry
     @Async
     public void sendEmail(String toEmail, String text){
         MimeMessage message = mailSender.createMimeMessage();

@@ -1,6 +1,8 @@
 package com.portnum.number.global.aop;
 
 import com.portnum.number.global.aop.annotation.Retry;
+import com.portnum.number.global.exception.Code;
+import com.portnum.number.global.exception.GlobalException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -9,6 +11,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 @Slf4j
 @Aspect
@@ -33,6 +36,6 @@ public class RetryAspect {
             }
         }
 
-        throw exceptionHandler;
+        throw new GlobalException(Code.INTERNAL_ERROR, "Retry 횟수 초과", exceptionHandler);
     }
 }
