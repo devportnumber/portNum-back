@@ -1,5 +1,6 @@
 package com.portnum.number.global.aop;
 
+import com.portnum.number.global.aop.annotation.NoTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,7 +14,7 @@ import java.lang.reflect.Method;
 @Slf4j
 @Aspect
 @Component
-public class AopTrace {
+public class TraceAspect {
 
     @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
     public void controller(){

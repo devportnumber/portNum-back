@@ -2,7 +2,7 @@ package com.portnum.number.admin.controller;
 
 
 import com.portnum.number.admin.service.AdminQueryService;
-import com.portnum.number.global.aop.NoTrace;
+import com.portnum.number.global.aop.annotation.NoTrace;
 import com.portnum.number.global.common.dto.response.DataResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

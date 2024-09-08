@@ -1,4 +1,4 @@
-package com.portnum.number.global.aop;
+package com.portnum.number.global.aop.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
