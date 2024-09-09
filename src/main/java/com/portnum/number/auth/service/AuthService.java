@@ -44,10 +44,7 @@ public class AuthService {
     public void reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = aes128Config.decryptAes(jwtTokenProvider.resolveRefreshToken(request));
         String email = extractEmail(request);
-        System.out.println(email);
         String redisRefreshToken = redisService.getValues(email);
-
-        System.out.println(redisService.checkExistsValue(redisRefreshToken) + " " + refreshToken.equals(redisRefreshToken));
 
         if(redisService.checkExistsValue(redisRefreshToken) && refreshToken.equals(redisRefreshToken)){
             Admin findUser = findByEmail(email);
@@ -68,7 +65,6 @@ public class AuthService {
 
     public String extractEmail(HttpServletRequest request) {
         String encryptedRefreshToken = aes128Config.decryptAes(jwtTokenProvider.resolveRefreshToken(request));
-//        System.out.println(encryptedRefreshToken + "==========================");
         Claims claims = jwtTokenProvider.parseClaims(encryptedRefreshToken);
 
         return claims.getSubject();
