@@ -4,7 +4,7 @@ import java.util.List;
 
 public class UrlUtils {
     public static final List<String> EXCLUDE_URLS = List.of(
-            "/", "/h2", "/auth/login", "/docs/index.html",
+            "/auth/login", "/docs/index.html",
             "/admin/signup", "/admin/valid", "/admin/lost", "/admin/health",
             "/admin/image", "/admin/reissue", "/admin/popup/api"
     );
