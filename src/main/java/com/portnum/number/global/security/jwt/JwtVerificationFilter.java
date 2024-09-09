@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portnum.number.global.common.dto.response.ResponseDto;
 import com.portnum.number.global.common.service.RedisService;
 import com.portnum.number.global.exception.Code;
+import com.portnum.number.global.utils.UrlUtils;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -29,7 +31,7 @@ import java.util.List;
 public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private static final List<String> EXCLUDE_URL =
-            List.of("/", "/h2", "/auth/login", "/docs/index.html", "/admin/signup", "/admin/valid", "/admin/lost", "/admin/health", "/admin/image" , "/admin/reissue");
+            List.of("/", "/h2", "/auth/login", "/docs/index.html", "/admin/signup", "/admin/valid", "/admin/lost", "/admin/health", "/admin/image" , "/admin/reissue", "/admin/popup/api");
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
@@ -78,6 +80,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     // EXCLUDE_URL과 동일한 요청이 들어왔을 경우, 현재 필터를 진행하지 않고 다음 필터 진행
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
+        String servletPath = request.getServletPath();
+        return UrlUtils.EXCLUDE_URLS.stream().anyMatch(servletPath::startsWith);
     }
 }

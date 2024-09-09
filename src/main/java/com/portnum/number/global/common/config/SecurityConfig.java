@@ -8,6 +8,7 @@ import com.portnum.number.global.security.custom.*;
 import com.portnum.number.global.security.jwt.JwtAuthenticationFilter;
 import com.portnum.number.global.security.jwt.JwtTokenProvider;
 import com.portnum.number.global.security.jwt.JwtVerificationFilter;
+import com.portnum.number.global.utils.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,12 +61,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/admin/signup", "/admin/health", "/admin/popup/api/**", "/admin/valid/**", "/admin/lost/**", "/admin/image", "/admin/reissue").permitAll()
+                                .requestMatchers(UrlUtils.PERMITTED_URLS.toArray(new String[0])).permitAll()
                                 .anyRequest().hasAnyRole("USER", "ADMIN")
                 );
-//        httpSecurity
-//                .addFilterBefore(jwtAuthenticationFilter(httpSecurity), UsernamePasswordAuthenticationFilter.class)
-//                .addFilterAfter(jwtVerificationFilter(), JwtAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
