@@ -1,5 +1,7 @@
 package com.portnum.number.global.common.config;
 
+import com.portnum.number.global.exception.Code;
+import com.portnum.number.global.exception.GlobalException;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,60 +23,67 @@ import java.util.Base64;
  * AES 암호화는 SecretKey 길이에 따라 종류가 다른데 128, 192, 256bit 지원
  */
 @Component
-//@Profile("!test")
 public class Aes128Config {
     private static final Charset ENCODING_TYPE = StandardCharsets.UTF_8;
     private static final String INSTANCE_TYPE = "AES/CBC/PKCS5Padding";
 
     @Value("${aes.secret-key}")
     private String secretKey;
+    private IvParameterSpec ivParameterSpec;
+    private SecretKeySpec secretKeySpec;
+    private Cipher cipher;
 
-    private IvParameterSpec ivParameterSpec; // CBC 모드의 IV를 만들기 위해 사용
-    private SecretKeySpec secretKeySpec;    // 비밀키를 만드는데 사용됨
-    private Cipher cipher; // AES 및 다양한 암호화 알고리즘을 사용하여 데이터를 암호화 및 해독하는 메서드 제공
-
-    /**
-     * SecureRandom 인스턴스를 사용해서 16바이트 크기의 난수 바이트 배열 생성
-     * 해당 바이트 배열을 사용해서 IvParameterSpec 객체를 생성
-     * SecurityRandom 사용 이유: SecretKeySpec과 IvParameterSpec에 동일한 키를 사용하게 되면 보안에 취약하기 때문
-     * 따라서, 난수 생성기인 SecurityRandom 사용
-     */
     @PostConstruct
     public void init() throws NoSuchPaddingException, NoSuchAlgorithmException {
         SecureRandom secureRandom = new SecureRandom();
-        byte[] iv = new byte[16]; // 128bits
+        byte[] iv = new byte[16];   // 16bytes = 128bits
         secureRandom.nextBytes(iv);
         ivParameterSpec = new IvParameterSpec(iv);
-
-        /*
-         * ENCODING_TYPE(UTF-8)를 사용하여 SecretKey 문자열을 바이트로 변환한 키 값과 문자열 "AES"를 사용하여
-         * SecretKeySpec를 생성
-         */
         secretKeySpec = new SecretKeySpec(secretKey.getBytes(ENCODING_TYPE), "AES");
-        cipher = Cipher.getInstance(INSTANCE_TYPE); // 알고리즘 타입을 지정하여 Cipher 생성. 위 코드에서는 AES/CBC/PKCS5Padding 사용
+        cipher = Cipher.getInstance(INSTANCE_TYPE);
     }
 
     // AES 암호화
     public String encryptAes(String plaintext) {
         try {
-            // 암호화 모드에서 Cipher를 초기화하고 doFinal() 메소드로 데이터 암호화
+            // 새로운 IV 생성
+            SecureRandom secureRandom = new SecureRandom();
+            byte[] iv = new byte[16];
+            secureRandom.nextBytes(iv);
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
             byte[] encrypted = cipher.doFinal(plaintext.getBytes(ENCODING_TYPE));
-            return new String(Base64.getEncoder().encode(encrypted), ENCODING_TYPE);
+
+            // IV와 암호화된 데이터를 함께 저장 (IV + encrypted)
+            byte[] encryptedWithIv = new byte[iv.length + encrypted.length];
+            System.arraycopy(iv, 0, encryptedWithIv, 0, iv.length);
+            System.arraycopy(encrypted, 0, encryptedWithIv, iv.length, encrypted.length);
+
+            return new String(Base64.getEncoder().encode(encryptedWithIv), ENCODING_TYPE);
         } catch (Exception e) {
-            throw new IllegalStateException("ENCRYPTION_FAILED");
+            throw new GlobalException(Code.INTERNAL_ERROR, "Encrypt Error");
         }
     }
 
+
     // AES 복호화
-    public String decryptAes(String plaintext) {
+    public String decryptAes(String ciphertext) {
         try {
-            // 복호화 모드에서 Cipher를 초기화하고 doFinal() 메소드로 데이터 복호화
+            byte[] decoded = Base64.getDecoder().decode(ciphertext.getBytes(ENCODING_TYPE));
+
+            // IV와 암호화된 데이터 분리
+            byte[] iv = new byte[16];
+            byte[] encrypted = new byte[decoded.length - iv.length];
+            System.arraycopy(decoded, 0, iv, 0, iv.length);
+            System.arraycopy(decoded, iv.length, encrypted, 0, encrypted.length);
+
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-            byte[] decoded = Base64.getDecoder().decode(plaintext.getBytes(ENCODING_TYPE));
-            return new String(cipher.doFinal(decoded), ENCODING_TYPE); // 복호화한 데이터도 문자열로 인코딩하여 반환
+            return new String(cipher.doFinal(encrypted), ENCODING_TYPE);
         } catch (Exception e) {
-            throw new IllegalStateException("DECRYPTION_FAILED");
+            throw new GlobalException(Code.INTERNAL_ERROR, "Decrypt Error");
         }
     }
+
 }

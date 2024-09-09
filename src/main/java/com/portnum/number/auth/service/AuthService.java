@@ -1,16 +1,20 @@
 package com.portnum.number.auth.service;
 
+import com.portnum.number.admin.entity.Admin;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.global.common.config.Aes128Config;
+import com.portnum.number.global.common.dto.TokenDto;
 import com.portnum.number.global.common.service.RedisService;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;
+import com.portnum.number.global.security.custom.CustomUserDetails;
 import com.portnum.number.global.security.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 
@@ -24,54 +28,50 @@ public class AuthService {
     private final AdminRepository adminRepository;
 
     @Transactional
-    public void logout(String encryptedRefreshToken, String accessToken) {
-        verifiedRefreshToken(encryptedRefreshToken);
+    public void logout(HttpServletRequest request) {
+        String email = extractEmail(request);
 
-        String refreshToken = aes128Config.decryptAes(encryptedRefreshToken);
-        Claims claims = jwtTokenProvider.parseClaims(refreshToken);
-        String email = claims.getSubject();
         String redisRefreshToken = redisService.getValues(email);
-
         if(redisService.checkExistsValue(redisRefreshToken)){
             redisService.deleteValues(email);
+
             // 로그아웃 시 Access Token Redis 저장 ( key = Access Token / value = "logout")
             long accessTokenValidityInSeconds = jwtTokenProvider.getAccessTokenValidityInSeconds();
-            redisService.setValues(accessToken, "logout", Duration.ofMillis(accessTokenValidityInSeconds));
+            redisService.setValues(jwtTokenProvider.resolveAccessToken(request), "logout", Duration.ofMillis(accessTokenValidityInSeconds));
         }
     }
 
+    public void reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = aes128Config.decryptAes(jwtTokenProvider.resolveRefreshToken(request));
+        String email = extractEmail(request);
+        System.out.println(email);
+        String redisRefreshToken = redisService.getValues(email);
 
-    private void verifiedRefreshToken(String encryptedRefreshToken){
-        if(!StringUtils.hasText(encryptedRefreshToken)){
-            throw new GlobalException(Code.VALIDATION_ERROR, "Not Valid RefreshToken");
+        System.out.println(redisService.checkExistsValue(redisRefreshToken) + " " + refreshToken.equals(redisRefreshToken));
+
+        if(redisService.checkExistsValue(redisRefreshToken) && refreshToken.equals(redisRefreshToken)){
+            Admin findUser = findByEmail(email);
+            CustomUserDetails userDetails = CustomUserDetails.of(findUser);
+            TokenDto tokenDto = jwtTokenProvider.generateToken(userDetails);
+            jwtTokenProvider.accessTokenSetHeader(tokenDto.getAccessToken(), response);
+            return;
         }
+
+        throw new GlobalException(Code.REISSUE_FAIL, "토큰 재발급에 실패했습니다.");
     }
 
-//    private User findUserByEmail(String email){
-//        return userRepository.findByEmail(email)
-//                .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
-//    }
-//
-//    public String reissueAccessToken(String encryptedRefreshToken) {
-//        this.verifiedRefreshToken(encryptedRefreshToken);
-//        String refreshToken = aes128Config.decryptAes(encryptedRefreshToken);
-//        Claims claims = jwtTokenProvider.parseClaims(refreshToken);
-//        String email = claims.getSubject();
-//        String redisRefreshToken = redisService.getValues(email);
-//
-//        if(redisService.checkExistsValue(redisRefreshToken) && refreshToken.equals(redisRefreshToken)){
-//            User findUser = this.findUserByEmail(email);
-//            CustomUserDetails userDetails = CustomUserDetails.of(findUser);
-//            TokenDto tokenDto = jwtTokenProvider.generateToken(userDetails);
-//            String newAccessToken = tokenDto.getAccessToken();
-////            long refreshTokenExpirationMillis = jwtTokenProvider.getRefreshTokenValidityInSeconds();
-////            redisService.setValues(email, redisRefreshToken, Duration.ofMillis(refreshTokenExpirationMillis));
-//
-//            return newAccessToken;
-//        }
-//        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//
-//    }
+    private Admin findByEmail(String email){
+        return adminRepository.findByEmail(email)
+                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin Email"));
+    }
 
+
+    public String extractEmail(HttpServletRequest request) {
+        String encryptedRefreshToken = aes128Config.decryptAes(jwtTokenProvider.resolveRefreshToken(request));
+//        System.out.println(encryptedRefreshToken + "==========================");
+        Claims claims = jwtTokenProvider.parseClaims(encryptedRefreshToken);
+
+        return claims.getSubject();
+    }
 
 }

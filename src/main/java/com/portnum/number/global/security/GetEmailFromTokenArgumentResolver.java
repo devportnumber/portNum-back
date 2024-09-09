@@ -38,7 +38,6 @@ public class GetEmailFromTokenArgumentResolver implements HandlerMethodArgumentR
 
         String userSubject = jwtTokenProvider.getUserSubject(authorizationHeader.substring(6));
 
-        System.out.println("==================================" + userSubject);
         return userSubject;
     }
 

@@ -47,7 +47,6 @@ public class PopupCommandService {
     }
 
     public PopupInfoResponse modify(PopupModifyRequest request, String email) {
-        System.out.println("====================" + email);
         Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), email);
         findPopup.modifyPopup(request);
 

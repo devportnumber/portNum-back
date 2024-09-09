@@ -65,6 +65,13 @@ public class RedisService {
         return !value.equals("false");
     }
 
+//    public boolean checkExistsEmail(String email){
+//        String value = getValues(email);
+//
+//        System.out.println(value);
+//        return !value.equals("false");
+//    }
+
     public static Duration toTomorrow() {
         final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         final LocalDateTime tomorrow = now.plusDays(1);

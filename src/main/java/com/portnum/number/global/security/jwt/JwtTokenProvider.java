@@ -6,6 +6,7 @@ import com.portnum.number.admin.entity.RoleType;
 import com.portnum.number.global.common.dto.TokenDto;
 import com.portnum.number.global.common.dto.response.ResponseDto;
 import com.portnum.number.global.exception.Code;
+import com.portnum.number.global.exception.GlobalException;
 import com.portnum.number.global.security.custom.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -115,9 +116,8 @@ public class JwtTokenProvider {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
         if(claims.get(AUTHORITIES_KEY) == null){
-            sendErrorResponse(response, "Empty Authorized Token");
+            sendErrorResponse(response, "Empty Authorized Token", Code.UNAUTHORIZED);
         }
-
 
         String roleString = (String) claims.get(AUTHORITIES_KEY);
 
@@ -145,32 +145,27 @@ public class JwtTokenProvider {
         } catch(MalformedJwtException e){
             log.info("Invalid JWT token");
             log.trace("Invalid JWT token trace = {}", e);
-            sendErrorResponse(response, "손상된 토큰입니다.");
+            sendErrorResponse(response, "손상된 토큰입니다.", Code.UNAUTHORIZED);
             return false;
         } catch (ExpiredJwtException e){
             log.info("Expired JWT token");
             log.trace("Expired JWT token trace = {}", e);
-            sendErrorResponse(response, "만료된 토큰입니다.");
+            sendErrorResponse(response, "만료된 토큰입니다.", Code.EXPIRE_ACCESS_TOKEN);
             return false;
         } catch (UnsupportedJwtException e){
             log.info("Unsupported JWT token");
             log.trace("Unsupported JWT token trace = {}", e);
-            sendErrorResponse(response, "지원하지 않는 토큰입니다.");
-            //        String encryptedRefreshToken = jwtTokenProvider.resolveRefreshToken(request);
-//        String newAccessToken = authService.reissueAccessToken(encryptedRefreshToken);
-//        jwtTokenProvider.accessTokenSetHeader(newAccessToken, response);
-//
-//        return new ResponseEntity<>(new SingleResponseDto<>("Access Token reissued"), HttpStatus.OK);
+            sendErrorResponse(response, "지원하지 않는 토큰입니다.", Code.UNAUTHORIZED);
             return false;
         } catch(IllegalArgumentException e){
             log.info("JWT claims string is empty");
             log.trace("JWT claims string is empty trace = {}", e);
-            sendErrorResponse(response, "시그니처 검증에 실패한 토큰입니다.");
+            sendErrorResponse(response, "시그니처 검증에 실패한 토큰입니다.", Code.UNAUTHORIZED);
             return false;
         } catch(BadCredentialsException e){
             log.info("Login Info Error");
             log.trace("Login Info Error is empty trace = {}", e);
-            sendErrorResponse(response, "로그인 정보가 잘못되었습니다.");
+            sendErrorResponse(response, "로그인 정보가 잘못되었습니다.", Code.UNAUTHORIZED);
             return false;
         }
         return true;
@@ -210,16 +205,16 @@ public class JwtTokenProvider {
             return refreshToken;
         }
 
-        return null;
+        throw new GlobalException(Code.EMPTY_REFRESH_TOKEN, "리프레시 토큰이 존재하지 않습니다.");
     }
 
     // JWT 예외처리
-    private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
+    private void sendErrorResponse(HttpServletResponse response, String message, Code errorCode) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setCharacterEncoding("utf-8");
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(objectMapper.writeValueAsString(new ResponseDto(false, Code.UNAUTHORIZED.getCode(), message)));
+        response.getWriter().write(objectMapper.writeValueAsString(new ResponseDto(false, errorCode.getCode(), message)));
     }
 
     public String getUserSubject(String token){

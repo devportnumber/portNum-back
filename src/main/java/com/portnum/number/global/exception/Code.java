@@ -23,7 +23,11 @@ public enum Code {
 
     UNAUTHORIZED(30020, HttpStatus.UNAUTHORIZED, "User unauthorized"),
     IO_ERROR(30021, HttpStatus.INTERNAL_SERVER_ERROR, "IO_ERROR"),
-    FORBIDDEN(30022, HttpStatus.FORBIDDEN, "User Forbidden");
+    FORBIDDEN(30022, HttpStatus.FORBIDDEN, "User Forbidden"),
+
+    EXPIRE_ACCESS_TOKEN(30030, HttpStatus.UNAUTHORIZED, "Token Expired"),
+    EMPTY_REFRESH_TOKEN(30031, HttpStatus.UNAUTHORIZED, "Empty Refresh Token"),
+    REISSUE_FAIL(30032, HttpStatus.UNAUTHORIZED, "Token Reissue Fail");
 
 
     private final Integer code;
