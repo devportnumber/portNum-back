@@ -50,6 +50,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
             if(StringUtils.hasText(accessToken) && doNotLogout(accessToken) && jwtTokenProvider.validateToken(accessToken, response)){
                     setAuthenticationToContext(accessToken, response);
+            } else{
+                return;
             }
         } catch (RuntimeException e) {
             ObjectMapper objectMapper = new ObjectMapper();

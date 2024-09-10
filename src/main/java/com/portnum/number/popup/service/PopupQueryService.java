@@ -1,5 +1,6 @@
 package com.portnum.number.popup.service;
 
+import com.portnum.number.admin.entity.Admin;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.global.common.dto.response.PageResponseDto;
 import com.portnum.number.global.exception.Code;
@@ -37,8 +38,30 @@ public class PopupQueryService {
         return PageResponseDto.of(popups, PopupInfoResponse :: of);
     }
 
-    public PopupDetailResponse readPopupInfo(Long adminId, Long popupId) {
+    public PopupDetailResponse readPopupDetail(Long adminId, Long popupId) {
         validateAdmin(adminId);
+
+        Popup findPopup = popupRepository.getPopupDetail(popupId)
+                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Popup"));
+
+        return PopupDetailResponse.of(findPopup);
+    }
+
+    public PageResponseDto read(String nickName, int pageNo, PopupSearchCondition searchCondition) {
+        int page = pageNo == 0 ? 0 : pageNo - 1;
+        int pageLimit = 10;
+
+        Pageable pageable = PageRequest.of(page, pageLimit);
+
+        Admin admin = validateAdminWithNickName(nickName);
+
+        Page<Popup> popups = popupRepository.findPopups(admin.getId(), pageable, searchCondition);
+
+        return PageResponseDto.of(popups, PopupInfoResponse :: of);
+    }
+
+    public PopupDetailResponse readPopupDetail(String nickName, Long popupId) {
+        validateAdminWithNickName(nickName);
 
         Popup findPopup = popupRepository.getPopupDetail(popupId)
                 .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Popup"));
@@ -60,5 +83,10 @@ public class PopupQueryService {
     private void validateAdmin(Long adminId) {
         if(!adminRepository.existsById(adminId))
             throw new GlobalException(Code.NOT_FOUND, "Not Found Admin");
+    }
+
+    private Admin validateAdminWithNickName(String nickName) {
+        return adminRepository.findByNickName(nickName)
+                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin"));
     }
 }

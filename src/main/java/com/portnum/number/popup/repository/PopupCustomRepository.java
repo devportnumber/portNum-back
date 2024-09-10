@@ -11,4 +11,5 @@ public interface PopupCustomRepository {
     Page<Popup> findPopups(Long adminId, Pageable pageable, PopupSearchCondition searchCondition);
 
     Page<Popup> findAllPopup(Pageable pageable, PopupSearchCondition searchCondition);
+
 }

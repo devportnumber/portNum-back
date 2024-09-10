@@ -16,20 +16,38 @@ public class PopupQueryController {
 
     private final PopupQueryService popupQueryService;
 
-    @GetMapping("/api/{adminId}")
+//    @GetMapping("/api/{adminId}")
+//    public DataResponseDto popupList(
+//            @PathVariable("adminId") Long adminId,
+//            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+//            PopupSearchCondition searchCondition
+//    ){
+//        PageResponseDto response = popupQueryService.read(adminId, pageNo, searchCondition);
+//
+//        return DataResponseDto.of(response);
+//    }
+//
+//    @GetMapping("/api/{adminId}/{popupId}")
+//    public DataResponseDto popupDetail(@PathVariable("adminId") Long adminId, @PathVariable("popupId") Long popupId){
+//        PopupDetailResponse response = popupQueryService.readPopupDetail(adminId, popupId);
+//
+//        return DataResponseDto.of(response);
+//    }
+
+    @GetMapping("/api/{nickName}")
     public DataResponseDto popupList(
-            @PathVariable("adminId") Long adminId,
+            @PathVariable("nickName") String nickName,
             @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
             PopupSearchCondition searchCondition
     ){
-        PageResponseDto response = popupQueryService.read(adminId, pageNo, searchCondition);
+        PageResponseDto response = popupQueryService.read(nickName, pageNo, searchCondition);
 
         return DataResponseDto.of(response);
     }
 
-    @GetMapping("/api/{adminId}/{popupId}")
-    public DataResponseDto popupInfo(@PathVariable("adminId") Long adminId, @PathVariable("popupId") Long popupId){
-        PopupDetailResponse response = popupQueryService.readPopupInfo(adminId, popupId);
+    @GetMapping("/api/{nickName}/{popupId}")
+    public DataResponseDto popupDetail(@PathVariable("nickName") String nickName, @PathVariable("popupId") Long popupId){
+        PopupDetailResponse response = popupQueryService.readPopupDetail(nickName, popupId);
 
         return DataResponseDto.of(response);
     }

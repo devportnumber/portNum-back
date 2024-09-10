@@ -27,7 +27,6 @@ public class PopupCustomRepositoryImpl implements PopupCustomRepository {
 
     @Override
     public Page<Popup> findPopups(Long adminId, Pageable pageable, PopupSearchCondition searchCondition) {
-
         // Load Data
         List<Popup> popups = jpaQueryFactory
                 .selectFrom(popup)
