@@ -55,14 +55,12 @@ public class PopupCommandService {
 
     public void remove(PopupRemoveRequest request, String email) {
         for(Long popupId : request.getPopupIds()){
-            Popup findPopup = validatePopupAdmin(popupId, request.getAdminId(), email);
+            Popup findPopup = validatePopupAndGetWithImages(popupId, request.getAdminId(), email);
 
-            List<Long> imgIds = findPopup.getImages()
-                    .stream()
-                    .map(Image::getId)
-                    .toList();
+            List<Image> images = findPopup.getImages();
 
-            removeImageS3AndDb(imgIds, findPopup.getId());
+            removeImageS3AndDb(images, findPopup.getId());
+
         }
 
         popupRepository.deletePopups(request.getPopupIds());
@@ -108,19 +106,18 @@ public class PopupCommandService {
 
         findPopup.modifyRepresentImgUrl(request.getRepresentUrl());
 
-        removeImageS3AndDb(request.getImgIds(), request.getPopupId());
+        List<Image> images = imageRepository.findByIds(request.getImgIds());
+        removeImageS3AndDb(images, request.getPopupId());
     }
 
-    private void removeImageS3AndDb(List<Long> imgIds, Long popupId) {
-        for(Long imageId : imgIds){
-            Image image = imageRepository.findById(imageId)
-                    .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Image"));
-
+    private void removeImageS3AndDb(List<Image> images, Long popupId) {
+        for(Image image : images){
             validatePopupImage(image, popupId);
 
             imageUploadService.deleteImage(image.getImgUrl());
         }
 
+        List<Long> imgIds = images.stream().map(Image::getId).toList();
         imageRepository.deleteAllByIdInBatch(imgIds);
     }
 
@@ -141,6 +138,19 @@ public class PopupCommandService {
 
     private Popup validatePopupAdmin(Long popupId, Long adminId, String email){
         Popup popup = validatePopup(popupId);
+
+        if(email.equals(adminEmail)){
+            return popup;
+        } else if(!popup.getAdmin().getId().equals(adminId)){
+            throw new GlobalException(Code.VALIDATION_ERROR, "Not Admin About Forum");
+        } else{
+            return popup;
+        }
+    }
+
+    private Popup validatePopupAndGetWithImages(Long popupId, Long adminId, String email){
+        Popup popup = popupRepository.getPopupDetail(popupId)
+                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Popup"));
 
         if(email.equals(adminEmail)){
             return popup;

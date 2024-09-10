@@ -41,7 +41,7 @@ public class PopupQueryService {
         validateAdmin(adminId);
 
         Popup findPopup = popupRepository.getPopupDetail(popupId)
-                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Amdin"));
+                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Popup"));
 
         return PopupDetailResponse.of(findPopup);
     }

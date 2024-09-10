@@ -5,6 +5,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.portnum.number.global.aop.annotation.Retry;
 import com.portnum.number.global.common.dto.response.PreSignedUrlResponse;
@@ -91,6 +92,7 @@ public class S3PreSignedUrlProvider {
 
             log.info("key = {}", key);
             amazonS3Client.deleteObject(bucket, key);
+
         } catch (AmazonServiceException e) {
             log.error("이미지 삭제 실패했습니다. {}", e.getMessage());
             throw new GlobalException(Code.INTERNAL_ERROR, "이미지 삭제 실패했습니다.");
