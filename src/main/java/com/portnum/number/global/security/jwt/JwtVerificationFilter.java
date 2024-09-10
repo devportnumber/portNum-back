@@ -44,7 +44,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
         try {
             String accessToken = jwtTokenProvider.resolveAccessToken(request);
-            String encryptedRefreshToken = jwtTokenProvider.resolveRefreshToken(request);
+//            String encryptedRefreshToken = jwtTokenProvider.resolveRefreshToken(request);
 //            boolean b = jwtTokenProvider.validateToken(accessToken, response);
 //            log.info("accessToken: {}, boolean: {}", accessToken, b);
 
