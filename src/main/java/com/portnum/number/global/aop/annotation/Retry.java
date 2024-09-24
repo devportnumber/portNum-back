@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Retry {
     int value() default 3;
+    long backOff() default 100L;
 }

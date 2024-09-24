@@ -25,6 +25,8 @@ public class RetryAspect {
         log.info("[retry] Method: {}, retry={}", method.getName(), retry);
 
         int maxRetry = retry.value();
+        long backOff = retry.backOff();
+
         Exception exceptionHandler = null;
 
         for(int retryCount = 1; retryCount <= maxRetry; retryCount++){
@@ -33,6 +35,11 @@ public class RetryAspect {
                 return joinPoint.proceed();
             } catch (Exception e){
                 exceptionHandler = e;
+                log.warn("[retry] Exception occured: {}. Retrying after {} ms", e.getMessage(), backOff);
+
+                Thread.sleep(backOff);
+
+                backOff *= 2;
             }
         }
 
