@@ -5,6 +5,8 @@ import com.portnum.number.global.common.provider.S3PreSignedUrlProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ImageUploadService {
@@ -17,5 +19,9 @@ public class ImageUploadService {
 
     public void deleteImage(String imageUrl){
         s3PreSignedUrlProvider.deleteImageByPath(imageUrl);
+    }
+
+    public void deleteImages(List<String> imageUrls){
+        s3PreSignedUrlProvider.deleteImagesByPaths(imageUrls);
     }
 }

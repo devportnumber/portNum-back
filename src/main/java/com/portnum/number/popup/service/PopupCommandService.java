@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -85,18 +86,24 @@ public class PopupCommandService {
 
     private List<ImageResponse> modifyImagesUrl(ImageModifyRequest request) {
         List<ImageResponse> images = new ArrayList<>();
+        List<String> orgImgUrls = new ArrayList<>();
 
+        // 지금은 조회후 하나씩 업데이트 <- 쿼리가 좀 많이 나감
+        // 성능 이슈 발생시 그냥 전체 삭제 후 다시 삽입
         for(ImageResponse imageResponse : request.getImages()){
             Image image = imageRepository.findById(imageResponse.getImgId())
                     .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Image"));
 
             validatePopupImage(image, request.getPopupId());
 
-            imageUploadService.deleteImage(image.getImgUrl());
+//            imageUploadService.deleteImage(image.getImgUrl());
+            orgImgUrls.add(image.getImgUrl());
             image.modifyUrl(imageResponse.getImgUrl());
 
             images.add(ImageResponse.of(image));
         }
+
+        imageUploadService.deleteImages(orgImgUrls);
 
         return images;
     }
@@ -111,14 +118,17 @@ public class PopupCommandService {
     }
 
     private void removeImageS3AndDb(List<Image> images, Long popupId) {
+        List<Long> imgIds = new ArrayList<>();
+        List<String> imgUrls = new ArrayList<>();
+
         for(Image image : images){
             validatePopupImage(image, popupId);
-
-            imageUploadService.deleteImage(image.getImgUrl());
+            imgIds.add(image.getId());
+            imgUrls.add(image.getImgUrl());
+//            imageUploadService.deleteImage(image.getImgUrl());
         }
-
-        List<Long> imgIds = images.stream().map(Image::getId).toList();
         imageRepository.deleteAllByIdInBatch(imgIds);
+        imageUploadService.deleteImages(imgUrls);
     }
 
     private void validatePopupImage(Image image, Long popupId) {

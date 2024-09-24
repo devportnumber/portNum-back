@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -98,4 +100,29 @@ public class S3PreSignedUrlProvider {
             throw new GlobalException(Code.INTERNAL_ERROR, "이미지 삭제 실패했습니다.");
         }
     }
+
+    @Retry
+    @Async
+    public void deleteImagesByPaths(List<String> imagePaths) {
+        try {
+            // URL에서 각 key 추출
+            List<DeleteObjectsRequest.KeyVersion> keys = new ArrayList<>();
+            for (String imagePath : imagePaths) {
+                String key = imagePath.substring(imagePath.indexOf("image/"));
+                log.info("key = {}", key);
+                keys.add(new DeleteObjectsRequest.KeyVersion(key));
+            }
+
+            // 여러 객체 삭제 요청 생성
+            DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucket)
+                    .withKeys(keys);
+
+            amazonS3Client.deleteObjects(deleteObjectsRequest);
+
+        } catch (AmazonServiceException e) {
+            log.error("이미지 삭제 실패했습니다. {}", e.getMessage());
+            throw new GlobalException(Code.INTERNAL_ERROR, "이미지 삭제 실패했습니다.");
+        }
+    }
+
 }
