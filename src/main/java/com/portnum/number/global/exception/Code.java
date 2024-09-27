@@ -27,8 +27,8 @@ public enum Code {
 
     EXPIRE_ACCESS_TOKEN(30030, HttpStatus.UNAUTHORIZED, "Token Expired"),
     EMPTY_REFRESH_TOKEN(30031, HttpStatus.UNAUTHORIZED, "Empty Refresh Token"),
-    REISSUE_FAIL(30032, HttpStatus.UNAUTHORIZED, "Token Reissue Fail");
-
+    REISSUE_FAIL(30032, HttpStatus.UNAUTHORIZED, "Token Reissue Fail"),
+    NOT_VALID_REFRESH_TOKEN(30033, HttpStatus.UNAUTHORIZED, "Not Valid Refresh Token");
 
     private final Integer code;
     private final HttpStatus httpStatus;

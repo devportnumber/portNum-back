@@ -43,18 +43,25 @@ public class AuthService {
 
     public void reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = aes128Config.decryptAes(jwtTokenProvider.resolveRefreshToken(request));
-        String email = extractEmail(request);
-        String redisRefreshToken = redisService.getValues(email);
 
-        if(redisService.checkExistsValue(redisRefreshToken) && refreshToken.equals(redisRefreshToken)){
-            Admin findUser = findByEmail(email);
-            CustomUserDetails userDetails = CustomUserDetails.of(findUser);
-            TokenDto tokenDto = jwtTokenProvider.generateToken(userDetails);
-            jwtTokenProvider.accessTokenSetHeader(tokenDto.getAccessToken(), response);
-            return;
+        try{
+            if(jwtTokenProvider.validateToken(refreshToken, response)){
+                String email = extractEmail(request);
+                String redisRefreshToken = redisService.getValues(email);
+
+                if(redisService.checkExistsValue(redisRefreshToken) && refreshToken.equals(redisRefreshToken)){
+                    Admin findUser = findByEmail(email);
+                    CustomUserDetails userDetails = CustomUserDetails.of(findUser);
+                    TokenDto tokenDto = jwtTokenProvider.generateToken(userDetails);
+                    jwtTokenProvider.accessTokenSetHeader(tokenDto.getAccessToken(), response);
+                    return;
+                }
+
+                throw new GlobalException(Code.REISSUE_FAIL, "토큰 재발급에 실패했습니다.");
+            }
+        } catch (Exception e){
+            throw new GlobalException(Code.NOT_VALID_REFRESH_TOKEN, "리프레시 토큰이 유효하지 않습니다.");
         }
-
-        throw new GlobalException(Code.REISSUE_FAIL, "토큰 재발급에 실패했습니다.");
     }
 
     private Admin findByEmail(String email){
