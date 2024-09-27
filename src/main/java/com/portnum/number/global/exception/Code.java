@@ -17,6 +17,7 @@ public enum Code {
     BAD_REQUEST(30000, HttpStatus.BAD_REQUEST, "Bad request"),
     VALIDATION_ERROR(30001, HttpStatus.BAD_REQUEST, "Validation error"),
     NOT_FOUND(30002, HttpStatus.NOT_FOUND, "Requested resource is not found"),
+    INVALID_JSON_FORMAT(30003, HttpStatus.BAD_REQUEST, "Invalid Json Format"),
 
     INTERNAL_ERROR(30010, HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
     DATA_ACCESS_ERROR(30011, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
