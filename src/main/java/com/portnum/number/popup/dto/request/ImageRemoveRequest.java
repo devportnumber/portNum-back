@@ -1,6 +1,7 @@
 package com.portnum.number.popup.dto.request;
 
 import com.portnum.number.popup.dto.response.ImageResponse;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -15,7 +16,7 @@ public class ImageRemoveRequest {
     @NotNull
     private Long popupId;
 
-    @NotNull
+    @NotBlank
     private String representUrl;
 
     @NotNull
