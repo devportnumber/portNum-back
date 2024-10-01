@@ -21,6 +21,7 @@ public class CustomUserDetails extends Admin implements UserDetails {
     private RoleType roleType;
     private String password;
     private String nickName;
+    private Boolean isRqPwChange;
 
     private CustomUserDetails(Admin admin){
         this.id = admin.getId();
@@ -28,6 +29,7 @@ public class CustomUserDetails extends Admin implements UserDetails {
         this.password = admin.getPassword();
         this.roleType = admin.getRoleType();
         this.nickName = admin.getNickName();
+        this.isRqPwChange = admin.getIsRqPwChange();
     }
 
     private CustomUserDetails(String email, RoleType role){

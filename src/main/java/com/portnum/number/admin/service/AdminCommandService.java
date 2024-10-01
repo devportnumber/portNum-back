@@ -83,6 +83,8 @@ public class AdminCommandService {
         if(findAdmin != null) {
             String randomPassword = RandomUtils.generateRandomCode();
             findAdmin.modifyPassword(passwordEncoder.encode(randomPassword));
+            findAdmin.modifyIsRqPwChange();
+
             mailService.sendEmail(request.getEmail(), randomPassword);
             return true;
         } else{

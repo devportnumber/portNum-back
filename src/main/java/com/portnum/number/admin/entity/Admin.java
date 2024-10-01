@@ -40,6 +40,9 @@ public class Admin extends BaseTimeEntity {
     @Column(nullable = false)
     private Boolean deleted = Boolean.FALSE;
 
+    @Column(nullable = false)
+    private Boolean isRqPwChange = Boolean.FALSE;
+
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
@@ -71,5 +74,10 @@ public class Admin extends BaseTimeEntity {
 
     public void modifyPassword(String password) {
         this.password = password;
+        this.isRqPwChange = Boolean.FALSE;
+    }
+
+    public void modifyIsRqPwChange(){
+        this.isRqPwChange = Boolean.TRUE;
     }
 }
