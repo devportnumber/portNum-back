@@ -20,7 +20,7 @@ public interface PopupRepository extends JpaRepository<Popup, Long>, PopupCustom
     @Query("update Popup p set p.deleted = true where p.id IN :popupIds")
     void deletePopups(List<Long> popupIds);
 
-    @Query("select distinct(p) from Popup p join fetch p.images where p.id =:popupId and p.deleted = false")
+    @Query("select distinct(p) from Popup p left join fetch p.images where p.id =:popupId and p.deleted = false")
     Optional<Popup> getPopupDetail(Long popupId);
 
 //    @Query("select distinct(p) from Popup p join fetch p.admin ")
