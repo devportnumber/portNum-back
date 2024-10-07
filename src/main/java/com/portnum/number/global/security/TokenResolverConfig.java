@@ -13,9 +13,11 @@ import java.util.List;
 public class TokenResolverConfig implements WebMvcConfigurer {
 
     private final GetEmailFromTokenArgumentResolver getEmailFromTokenArgumentResolver;
+    private final GetLoginIdFromTokenArgumentResolver getLoginIdFromTokenArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(getEmailFromTokenArgumentResolver);
+        resolvers.add(getLoginIdFromTokenArgumentResolver);
     }
 }

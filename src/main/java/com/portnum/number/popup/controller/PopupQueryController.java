@@ -47,7 +47,6 @@ public class PopupQueryController {
 
     @GetMapping("/api/{nickName}/{popupId}")
     public DataResponseDto popupDetail(@PathVariable("nickName") String nickName, @PathVariable("popupId") Long popupId){
-        System.out.println(nickName + " " + popupId + "==================================");
         PopupDetailResponse response = popupQueryService.readPopupDetail(nickName, popupId);
 
         return DataResponseDto.of(response);

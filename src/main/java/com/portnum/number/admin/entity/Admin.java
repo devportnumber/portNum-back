@@ -24,6 +24,9 @@ public class Admin extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    private String loginId;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -65,6 +68,7 @@ public class Admin extends BaseTimeEntity {
         this.profileUrl = request.getProfileUrl();
         this.roleType = RoleType.INFLUENCER;
         this.password = request.getPassword();
+        this.loginId = request.getLoginId();
     }
 
     public void modifyAdmin(AdminModifyRequest request){

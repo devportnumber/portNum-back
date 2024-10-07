@@ -29,11 +29,11 @@ public class AuthService {
 
     @Transactional
     public void logout(HttpServletRequest request) {
-        String email = extractEmail(request);
+        String loginId = extractLoginId(request);
 
-        String redisRefreshToken = redisService.getValues(email);
+        String redisRefreshToken = redisService.getValues(loginId);
         if(redisService.checkExistsValue(redisRefreshToken)){
-            redisService.deleteValues(email);
+            redisService.deleteValues(loginId);
 
             // 로그아웃 시 Access Token Redis 저장 ( key = Access Token / value = "logout")
             long accessTokenValidityInSeconds = jwtTokenProvider.getAccessTokenValidityInSeconds();
@@ -46,11 +46,11 @@ public class AuthService {
 
         try{
             if(jwtTokenProvider.validateToken(refreshToken, response)){
-                String email = extractEmail(request);
-                String redisRefreshToken = redisService.getValues(email);
+                String loginId = extractLoginId(request);
+                String redisRefreshToken = redisService.getValues(loginId);
 
                 if(redisService.checkExistsValue(redisRefreshToken) && refreshToken.equals(redisRefreshToken)){
-                    Admin findUser = findByEmail(email);
+                    Admin findUser = findByLoginId(loginId);
                     CustomUserDetails userDetails = CustomUserDetails.of(findUser);
                     TokenDto tokenDto = jwtTokenProvider.generateToken(userDetails);
                     jwtTokenProvider.accessTokenSetHeader(tokenDto.getAccessToken(), response);
@@ -69,8 +69,20 @@ public class AuthService {
                 .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin Email"));
     }
 
+    private Admin findByLoginId(String loginId){
+        return adminRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin Email"));
+    }
+
 
     public String extractEmail(HttpServletRequest request) {
+        String encryptedRefreshToken = aes128Config.decryptAes(jwtTokenProvider.resolveRefreshToken(request));
+        Claims claims = jwtTokenProvider.parseClaims(encryptedRefreshToken);
+
+        return claims.getSubject();
+    }
+
+    public String extractLoginId(HttpServletRequest request) {
         String encryptedRefreshToken = aes128Config.decryptAes(jwtTokenProvider.resolveRefreshToken(request));
         Claims claims = jwtTokenProvider.parseClaims(encryptedRefreshToken);
 

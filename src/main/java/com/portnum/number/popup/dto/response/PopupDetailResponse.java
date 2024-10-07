@@ -1,5 +1,6 @@
 package com.portnum.number.popup.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.portnum.number.popup.entity.Popup;
 import com.portnum.number.popup.entity.PopupCategory;
 import com.portnum.number.popup.entity.PopupStatus;
@@ -7,6 +8,8 @@ import com.portnum.number.popup.entity.embeddable.Address;
 import com.portnum.number.popup.entity.embeddable.Point;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +17,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class PopupDetailResponse{
+public class PopupDetailResponse implements Serializable{
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private Long popupId;
 
@@ -22,8 +28,10 @@ public class PopupDetailResponse{
 
     private PopupCategory category;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime startDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime endDate;
 
     private PopupStatus stat;

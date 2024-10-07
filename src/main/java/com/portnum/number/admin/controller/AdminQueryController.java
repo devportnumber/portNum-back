@@ -34,4 +34,11 @@ public class AdminQueryController {
         return DataResponseDto.of(response);
     }
 
+    @GetMapping("/valid/loginId")
+    public DataResponseDto validateLoginId(@RequestParam("value") String loginId){
+        boolean response = adminQueryService.validateLoginId(loginId);
+
+        return DataResponseDto.of(response);
+    }
+
 }

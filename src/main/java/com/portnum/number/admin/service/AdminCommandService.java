@@ -1,10 +1,7 @@
 package com.portnum.number.admin.service;
 
-import com.portnum.number.admin.dto.request.AdminModifyPasswordRequest;
-import com.portnum.number.admin.dto.request.LostRequest;
+import com.portnum.number.admin.dto.request.*;
 import com.portnum.number.admin.entity.Admin;
-import com.portnum.number.admin.dto.request.AdminCreateRequest;
-import com.portnum.number.admin.dto.request.AdminModifyRequest;
 import com.portnum.number.admin.dto.response.AdminInfoResponse;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.global.common.service.ImageUploadService;
@@ -19,8 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -57,14 +58,17 @@ public class AdminCommandService {
 
     public boolean modifyPassword(AdminModifyPasswordRequest request, String accessToken) {
         Admin findAdmin = validateAdmin(request.getAdminId());
-
-        if(passwordEncoder.matches(request.getOldPassword(), findAdmin.getPassword())){
+        if(StringUtils.hasText(request.getOldPassword()) && passwordEncoder.matches(request.getOldPassword(), findAdmin.getPassword())){
             findAdmin.modifyPassword(passwordEncoder.encode(request.getNewPassword()));
             logoutProcess(accessToken, findAdmin);
-            return true;
+        } else if(!StringUtils.hasText(request.getOldPassword())){
+            findAdmin.modifyPassword(passwordEncoder.encode(request.getNewPassword()));
+            logoutProcess(accessToken, findAdmin);
         } else{
             return false;
         }
+
+        return true;
     }
 
 
@@ -77,8 +81,15 @@ public class AdminCommandService {
         }
     }
 
-    public boolean lostPassword(LostRequest request) {
-        Admin findAdmin = findEmailAndNickName(request);
+    public String lostLoginId(LostLoginIdRequest request) {
+        Admin findAdmin = findEmailAndName(request);
+
+        return findAdmin.getLoginId();
+    }
+
+
+    public boolean lostPassword(LostPasswordRequest request) {
+        Admin findAdmin = findEmailAndLoginId(request);
 
         if(findAdmin != null) {
             String randomPassword = RandomUtils.generateRandomCode();
@@ -116,6 +127,18 @@ public class AdminCommandService {
     private Admin findEmailAndNickName(LostRequest request) {
         return adminRepository.findByEmailWithNickName(
                 request.getEmail(), request.getNickName()).orElse(null);
+    }
+
+    private Admin findEmailAndLoginId(LostPasswordRequest request) {
+        return adminRepository.findByEmailWithLoginId(
+                request.getEmail(), request.getLoginId()).orElse(null);
+    }
+
+    private Admin findEmailAndName(LostLoginIdRequest request) {
+        return adminRepository.findByEmailWithName(
+                request.getEmail(), request.getName()).orElseThrow(() ->{
+                    throw  new GlobalException(Code.VALIDATION_ERROR, "User Not Found");
+        });
     }
 
     private void logoutProcess(String accessToken, Admin findAdmin) {

@@ -1,9 +1,6 @@
 package com.portnum.number.admin.controller;
 
-import com.portnum.number.admin.dto.request.AdminCreateRequest;
-import com.portnum.number.admin.dto.request.AdminModifyPasswordRequest;
-import com.portnum.number.admin.dto.request.AdminModifyRequest;
-import com.portnum.number.admin.dto.request.LostRequest;
+import com.portnum.number.admin.dto.request.*;
 import com.portnum.number.admin.dto.response.AdminInfoResponse;
 import com.portnum.number.admin.service.AdminCommandService;
 import com.portnum.number.global.common.dto.response.DataResponseDto;
@@ -49,8 +46,15 @@ public class AdminCommandController {
         return DataResponseDto.of(response);
     }
 
+    @PostMapping("/lost/loginId")
+    public DataResponseDto lostLoginId(@Valid @RequestBody LostLoginIdRequest request){
+        String response = adminCommandService.lostLoginId(request);
+
+        return DataResponseDto.of(response);
+    }
+
     @PostMapping("/lost/password")
-    public DataResponseDto lostPassword(@Valid @RequestBody LostRequest request){
+    public DataResponseDto lostPassword(@Valid @RequestBody LostPasswordRequest request){
         boolean response = adminCommandService.lostPassword(request);
 
         return DataResponseDto.of(response);

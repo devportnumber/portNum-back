@@ -10,7 +10,6 @@ public class AdminModifyPasswordRequest {
     @NotNull
     private Long adminId;
 
-    @NotBlank
     private String oldPassword;
 
     @NotBlank

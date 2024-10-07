@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
+                new UsernamePasswordAuthenticationToken(loginDto.getLoginId(), loginDto.getPassword());
 
         return authenticationManager.authenticate(authenticationToken);
     }
@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 로그인 성공시 Refresh Token Redis 저장(key = Email / value = Refresh Token)
         long refreshTokenValidityInSeconds = jwtTokenProvider.getRefreshTokenValidityInSeconds();
-        redisService.setValues(customUserDetails.getEmail(), refreshToken, Duration.ofMillis(refreshTokenValidityInSeconds));
+        redisService.setValues(customUserDetails.getLoginId(), refreshToken, Duration.ofMillis(refreshTokenValidityInSeconds));
 
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }

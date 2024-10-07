@@ -11,6 +11,7 @@ import com.portnum.number.popup.dto.response.PopupInfoResponse;
 import com.portnum.number.popup.entity.Popup;
 import com.portnum.number.popup.repository.PopupRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,6 +61,7 @@ public class PopupQueryService {
         return PageResponseDto.of(popups, PopupInfoResponse :: of);
     }
 
+//    @Cacheable(value = "popupDetail", key = "#popupId", cacheManager = "popupCacheManager")
     public PopupDetailResponse readPopupDetail(String nickName, Long popupId) {
         validateAdminWithNickName(nickName);
 

@@ -57,6 +57,10 @@ dependencies {
 	implementation 'org.springframework:spring-context:6.1.4'
 	implementation 'org.springframework:spring-context-support:6.1.4'
 	implementation 'com.sun.mail:jakarta.mail:2.0.1'
+
+	/* Java 8 날짜/시간 타입 처리를 위한 Jackson 모듈 추가 */
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 }
 
 tasks.named('test') {

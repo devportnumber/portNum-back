@@ -23,7 +23,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        LoginResponse loginResponse = new LoginResponse(customUserDetails.getId(), customUserDetails.getEmail(), customUserDetails.getNickName(), customUserDetails.getProfileUrl(), customUserDetails.getIsRqPwChange());
+        LoginResponse loginResponse = new LoginResponse(customUserDetails.getId(), customUserDetails.getLoginId(), customUserDetails.getEmail(), customUserDetails.getNickName(), customUserDetails.getProfileUrl(), customUserDetails.getIsRqPwChange());
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(converObjectToJson(DataResponseDto.of(loginResponse)));
     }

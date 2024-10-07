@@ -17,14 +17,17 @@ import java.util.Collection;
 public class CustomUserDetails extends Admin implements UserDetails {
 
     private Long id;
+    private String loginId;
     private String email;
     private RoleType roleType;
     private String password;
     private String nickName;
     private Boolean isRqPwChange;
 
+
     private CustomUserDetails(Admin admin){
         this.id = admin.getId();
+        this.loginId = admin.getLoginId();
         this.email = admin.getEmail();
         this.password = admin.getPassword();
         this.roleType = admin.getRoleType();
@@ -62,7 +65,7 @@ public class CustomUserDetails extends Admin implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.loginId;
     }
 
     @Override

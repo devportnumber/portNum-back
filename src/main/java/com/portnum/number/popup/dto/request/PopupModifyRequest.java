@@ -46,4 +46,6 @@ public class PopupModifyRequest {
     private String representImgUrl;
 
     private List<String> keywords;
+
+    private ImagesModifyRequest images;
 }

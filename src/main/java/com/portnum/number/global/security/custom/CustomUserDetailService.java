@@ -26,8 +26,8 @@ public class CustomUserDetailService implements UserDetailsService {
      * 조회한 User 객체가 존재하면 createUserDetails() 메서드를 사용해서 CusotmUserDetails 객체를 생성하고 반환한다.
      */
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Admin findAdmin = adminRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+        Admin findAdmin = adminRepository.findByLoginId(loginId).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
         return CustomUserDetails.of(findAdmin);
     }

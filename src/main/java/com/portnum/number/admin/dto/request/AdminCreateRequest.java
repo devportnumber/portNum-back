@@ -10,6 +10,9 @@ public class AdminCreateRequest {
     private String email;
 
     @NotBlank
+    private String loginId;
+
+    @NotBlank
     private String nickName;
 
     @NotBlank
