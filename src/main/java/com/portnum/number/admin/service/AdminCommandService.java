@@ -19,9 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -41,7 +38,9 @@ public class AdminCommandService {
         validateEmailAndNickName(request.getEmail(), request.getNickName());
 
         request.modifyPassword(passwordEncoder.encode(request.getPassword()));
-        Admin newAdmin = Admin.of(request);
+        String urlName = RandomUtils.generateRandomCode();
+
+        Admin newAdmin = Admin.of(request, urlName);
         adminRepository.save(newAdmin);
 
         return AdminInfoResponse.of(newAdmin);

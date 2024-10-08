@@ -30,4 +30,9 @@ public class AdminQueryService {
     public boolean validateLoginId(String loginId) {
         return adminRepository.existsByNickName(loginId);
     }
+
+    public String getNickName(String urlName) {
+        return adminRepository.findNickNameByUrlName(urlName)
+                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin"));
+    }
 }
