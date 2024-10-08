@@ -23,6 +23,7 @@ public class CustomUserDetails extends Admin implements UserDetails {
     private String password;
     private String nickName;
     private Boolean isRqPwChange;
+    private String urlName;
 
 
     private CustomUserDetails(Admin admin){
@@ -33,6 +34,7 @@ public class CustomUserDetails extends Admin implements UserDetails {
         this.roleType = admin.getRoleType();
         this.nickName = admin.getNickName();
         this.isRqPwChange = admin.getIsRqPwChange();
+        this.urlName = admin.getUrlName();
     }
 
     private CustomUserDetails(String email, RoleType role){
