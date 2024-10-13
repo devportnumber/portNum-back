@@ -41,4 +41,10 @@ public class AdminQueryController {
         return DataResponseDto.of(response);
     }
 
+    @GetMapping("/nickName/{urlName}")
+    public DataResponseDto getNickName(@PathVariable("urlName") String urlName){
+        String response = adminQueryService.getNickName(urlName);
+
+        return DataResponseDto.of(response);
+    }
 }

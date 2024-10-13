@@ -17,4 +17,5 @@ public class LoginResponse{
     private String nickName;
     private String profileUrl;
     private Boolean isRqPwChange;
+    private String urlName;
 }

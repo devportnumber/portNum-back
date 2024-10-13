@@ -38,6 +38,9 @@ public class Admin extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false, unique = true)
+    private String urlName;
+
     private String profileUrl;
 
     @Column(nullable = false)
@@ -51,17 +54,17 @@ public class Admin extends BaseTimeEntity {
 
 
     /* 생성 메서드 */
-    public static Admin of(AdminCreateRequest request){
+    public static Admin of(AdminCreateRequest request, String urlName) {
         Admin newAdmin = new Admin();
 
-        newAdmin.modifyAdmin(request);
+        newAdmin.modifyAdmin(request, urlName);
 
         return newAdmin;
     }
 
 
     /* 수정 메서드 */
-    private void modifyAdmin(AdminCreateRequest request){
+    private void modifyAdmin(AdminCreateRequest request, String urlName) {
         this.email = request.getEmail();
         this.nickName = request.getNickName();
         this.name = request.getName();
@@ -69,6 +72,7 @@ public class Admin extends BaseTimeEntity {
         this.roleType = RoleType.INFLUENCER;
         this.password = request.getPassword();
         this.loginId = request.getLoginId();
+        this.urlName = urlName;
     }
 
     public void modifyAdmin(AdminModifyRequest request){

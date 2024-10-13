@@ -35,4 +35,7 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     @Query("select a from Admin a where a.email = :email and a.loginId = :loginId and a.deleted = false")
     Optional<Admin> findByEmailWithLoginId(String email, String loginId);
+
+    @Query("select a.nickName from Admin a where a.urlName =:urlName and a.deleted = false")
+    Optional<String> findNickNameByUrlName(String urlName);
 }
