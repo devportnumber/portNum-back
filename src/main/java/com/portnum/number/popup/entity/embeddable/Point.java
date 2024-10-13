@@ -7,6 +7,6 @@ import lombok.Getter;
 @Embeddable
 public class Point {
 
-    private String longitude;
-    private String latitude;
+    private Float longitude;
+    private Float latitude;
 }
