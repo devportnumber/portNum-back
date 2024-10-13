@@ -10,7 +10,7 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -28,11 +28,11 @@ public class PopupDetailResponse implements Serializable{
 
     private PopupCategory category;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime startDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private LocalDate startDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime endDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private LocalDate endDate;
 
     private PopupStatus stat;
 
@@ -57,8 +57,8 @@ public class PopupDetailResponse implements Serializable{
                 .popupId(popup.getId())
                 .name(popup.getName())
                 .category(popup.getCategory())
-                .startDate(popup.getStartDate())
-                .endDate(popup.getEndDate())
+                .startDate(popup.getStartDate().toLocalDate())
+                .endDate(popup.getEndDate().toLocalDate())
                 .stat(popup.getStat())
                 .point(popup.getPoint())
                 .address(popup.getAddress())
