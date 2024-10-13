@@ -34,6 +34,8 @@ public class PopupDetailResponse implements Serializable{
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate endDate;
 
+    private LocalDate regdt;
+
     private String operatingHours;
 
     private PopupStatus stat;
@@ -71,6 +73,7 @@ public class PopupDetailResponse implements Serializable{
                 .representImgUrl(popup.getRepresentImgUrl())
                 .images(popup.getImages().stream().map(ImageResponse::of).toList())
                 .keywords(popup.getKeywords())
+                .regdt(popup.getCreatedDt().toLocalDate())
                 .build();
     }
 }
