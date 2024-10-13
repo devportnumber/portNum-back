@@ -5,11 +5,9 @@ import com.portnum.number.popup.entity.PopupCategory;
 import com.portnum.number.popup.entity.PopupStatus;
 import com.portnum.number.popup.entity.embeddable.Address;
 import com.portnum.number.popup.entity.embeddable.Point;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -24,9 +22,11 @@ public class PopupInfoResponse {
 
     private PopupCategory category;
 
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
-    private LocalDateTime endDate;
+    private LocalDate endDate;
+
+    private String operatingHours;
 
     private PopupStatus stat;
 
@@ -49,8 +49,9 @@ public class PopupInfoResponse {
                 .popupId(popup.getId())
                 .name(popup.getName())
                 .category(popup.getCategory())
-                .startDate(popup.getStartDate())
-                .endDate(popup.getEndDate())
+                .startDate(popup.getStartDate().toLocalDate())
+                .endDate(popup.getEndDate().toLocalDate())
+                .operatingHours(popup.getOperatingHours())
                 .stat(popup.getStat())
                 .point(popup.getPoint())
                 .address(popup.getAddress())
