@@ -26,6 +26,8 @@ public class PopupInfoResponse {
 
     private LocalDate endDate;
 
+    private String operatingHours;
+
     private PopupStatus stat;
 
     private Point point;
@@ -49,6 +51,7 @@ public class PopupInfoResponse {
                 .category(popup.getCategory())
                 .startDate(popup.getStartDate().toLocalDate())
                 .endDate(popup.getEndDate().toLocalDate())
+                .operatingHours(popup.getOperatingHours())
                 .stat(popup.getStat())
                 .point(popup.getPoint())
                 .address(popup.getAddress())

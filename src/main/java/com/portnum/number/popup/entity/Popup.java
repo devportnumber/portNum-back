@@ -43,6 +43,9 @@ public class Popup extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDateTime endDate;
 
+    @Column(nullable = false)
+    private String operatingHours;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PopupStatus stat;
@@ -98,6 +101,7 @@ public class Popup extends BaseTimeEntity {
         this.category =request.getCategory();
         this.startDate =request.getStartDate();
         this.endDate =request.getEndDate();
+        this.operatingHours = request.getOperatingHours();
         this.stat = request.getStat();
         this.point = request.getPoint();
         this.description = request.getDescription();
@@ -114,6 +118,7 @@ public class Popup extends BaseTimeEntity {
         this.category =request.getCategory();
         this.startDate =request.getStartDate();
         this.endDate =request.getEndDate();
+        this.operatingHours = request.getOperatingHours();
         this.stat = request.getStat();
         this.point = request.getPoint();
         this.description = request.getDescription();

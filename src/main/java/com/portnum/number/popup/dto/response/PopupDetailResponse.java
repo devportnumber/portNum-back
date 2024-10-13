@@ -34,6 +34,8 @@ public class PopupDetailResponse implements Serializable{
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate endDate;
 
+    private String operatingHours;
+
     private PopupStatus stat;
 
     private Point point;
@@ -59,6 +61,7 @@ public class PopupDetailResponse implements Serializable{
                 .category(popup.getCategory())
                 .startDate(popup.getStartDate().toLocalDate())
                 .endDate(popup.getEndDate().toLocalDate())
+                .operatingHours(popup.getOperatingHours())
                 .stat(popup.getStat())
                 .point(popup.getPoint())
                 .address(popup.getAddress())

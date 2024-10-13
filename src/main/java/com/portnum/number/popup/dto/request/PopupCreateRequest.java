@@ -30,6 +30,8 @@ public class PopupCreateRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime endDate;
 
+    private String operatingHours;
+
     private PopupStatus stat;
 
     private Point point;
