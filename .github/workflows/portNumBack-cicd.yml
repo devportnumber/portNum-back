@@ -3,7 +3,7 @@ name: CI-CD PortNumber Back-End Service
 on:
   push:
     branches:
-      - BE/ys
+      - BE/dev
 
 jobs:
   deploy:
