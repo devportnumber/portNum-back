@@ -15,12 +15,13 @@ import java.util.stream.Collectors;
 public class PageResponseDto<D> {
     private int numberOfElements;
     private int totalPages;
+    private long totalElements;
     private boolean hasNext;
     private List<D> data;
 
     public static <E, D> PageResponseDto of(Page<E> entity, Function<E, D> makeDto) {
         List<D> dto = convertToDto(entity, makeDto);
-        return new PageResponseDto(entity.getNumberOfElements(), entity.getTotalPages(), entity.hasNext(), dto);
+        return new PageResponseDto(entity.getNumberOfElements(), entity.getTotalPages(), entity.getTotalElements(), entity.hasNext(), dto);
     }
 
     private static <E, D> List<D> convertToDto(Page<E> entity, Function<E, D> makeDto) {
