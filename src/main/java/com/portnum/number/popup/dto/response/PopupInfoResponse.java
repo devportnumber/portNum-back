@@ -26,6 +26,8 @@ public class PopupInfoResponse {
 
     private LocalDate endDate;
 
+    private LocalDate regdt;
+
     private String operatingHours;
 
     private PopupStatus stat;
@@ -60,6 +62,7 @@ public class PopupInfoResponse {
                 .mapUrl(popup.getMapUrl())
                 .representImgUrl(popup.getRepresentImgUrl())
                 .keywords(popup.getKeywords())
+                .regdt(popup.getCreatedDt().toLocalDate())
                 .build();
     }
 }
