@@ -43,7 +43,6 @@ public class Popup extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDateTime endDate;
 
-    @Column(nullable = false)
     private String operatingHours;
 
     @Enumerated(EnumType.STRING)
