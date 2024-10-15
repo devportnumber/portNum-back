@@ -52,6 +52,7 @@ public class PopupQueryService {
         int page = pageNo == 0 ? 0 : pageNo - 1;
         int pageLimit = 10;
 
+        System.out.println(searchCondition.getName());
         Pageable pageable = PageRequest.of(page, pageLimit);
 
         Admin admin = validateAdminWithNickName(nickName);
