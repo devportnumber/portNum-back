@@ -16,7 +16,7 @@ public class RandomUtils {
         return builder.toString();
     }
 
-    public static String generateALPHANUMERICRandomCode() {
+    public static String generateAlphaNumericRandomCode() {
         StringBuilder builder = new StringBuilder(LENGTH);
         for (int i = 0; i < LENGTH; i++) {
             builder.append(ALPHANUMERIC_CHARACTERS.charAt(random.nextInt(ALPHANUMERIC_CHARACTERS.length())));

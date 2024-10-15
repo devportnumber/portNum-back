@@ -38,7 +38,7 @@ public class AdminCommandService {
         validateEmailAndNickName(request.getEmail(), request.getNickName());
 
         request.modifyPassword(passwordEncoder.encode(request.getPassword()));
-        String urlName = RandomUtils.generateALPHANUMERICRandomCode();
+        String urlName = RandomUtils.generateAlphaNumericRandomCode();
 
         Admin newAdmin = Admin.of(request, urlName);
         adminRepository.save(newAdmin);
