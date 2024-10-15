@@ -61,7 +61,7 @@ public class PopupQueryService {
         return PageResponseDto.of(popups, PopupInfoResponse :: of);
     }
 
-//    @Cacheable(value = "popupDetail", key = "#popupId", cacheManager = "popupCacheManager")
+    @Cacheable(value = "popupDetail", key = "#popupId", cacheManager = "popupCacheManager")
     public PopupDetailResponse readPopupDetail(String nickName, Long popupId) {
         validateAdminWithNickName(nickName);
 

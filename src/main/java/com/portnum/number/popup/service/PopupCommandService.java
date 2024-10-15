@@ -15,6 +15,10 @@ import com.portnum.number.popup.repository.ImageRepository;
 import com.portnum.number.popup.repository.PopupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +40,7 @@ public class PopupCommandService {
     @Value("${portnumber.admin.loginId}")
     private String adminLongId;
 
+    @CachePut(value = "popupDetail", key = "#result.popupId", cacheManager = "popupCacheManager")
     public PopupDetailResponse create(PopupCreateRequest request) {
         Admin findAdmin = validateAdmin(request.getAdminId());
 
@@ -55,50 +60,68 @@ public class PopupCommandService {
 //        return PopupInfoResponse.of(findPopup);
 //    }
 
+    @CachePut(value = "popupDetail", key = "#result.popupId", cacheManager = "popupCacheManager")
     public PopupDetailResponse modify(PopupModifyRequest request, String loginId) {
         Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), loginId);
         findPopup.modifyPopup(request);
 
-        addImages(findPopup, request.getImages().getAddImages());
-        modifyImages(findPopup, request.getImages().getUpdateImages());
-        removeImages(findPopup, request.getImages().getRemoveImages());
+        modifyImagesLogic(findPopup, request.getImages());
+
+//        addImages(findPopup, request.getImages().getAddImages());
+//        modifyImages(findPopup, request.getImages().getUpdateImages());
+//        removeImages(findPopup, request.getImages().getRemoveImages());
 
         return PopupDetailResponse.of(findPopup);
     }
 
+//    @CacheEvict(value = "popupDetail", key = "#request.popupIds", cacheManager = "popupCacheManager")
+//    public void remove(PopupRemoveRequest request, String loginId) {
+//        for(Long popupId : request.getPopupIds()){
+//            Popup findPopup = validatePopupAndGetWithImages(popupId, request.getAdminId(), loginId);
+//
+//            List<Image> images = findPopup.getImages();
+//
+//            removeImageS3AndDb(images, findPopup.getId());
+//
+//        }
+//
+//        popupRepository.deletePopups(request.getPopupIds());
+//    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "popupDetail", key = "#popupId", cacheManager = "popupCacheManager")
+    })
+    public void removeSinglePopup(Long popupId, Long adminId, String loginId) {
+        Popup findPopup = validatePopupAndGetWithImages(popupId, adminId, loginId);
+
+        List<Image> images = findPopup.getImages();
+        removeImageS3AndDb(images, findPopup.getId());
+
+    }
+
+    @CacheEvict(value = "popupDetail", allEntries = true, cacheManager = "popupCacheManager")
     public void remove(PopupRemoveRequest request, String loginId) {
-        for(Long popupId : request.getPopupIds()){
-            Popup findPopup = validatePopupAndGetWithImages(popupId, request.getAdminId(), loginId);
-
-            List<Image> images = findPopup.getImages();
-
-            removeImageS3AndDb(images, findPopup.getId());
-
+        for(Long popupId : request.getPopupIds()) {
+            removeSinglePopup(popupId, request.getAdminId(), loginId);
         }
 
         popupRepository.deletePopups(request.getPopupIds());
     }
 
-
-//    public PopupInfoResponse addImages(ImageAddRequest request, String loginId) {
-//        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), loginId);
-//
-//        saveImages(findPopup, request.getImages());
-//
-//        return PopupInfoResponse.of(findPopup);
-//    }
+    private void modifyImagesLogic(Popup findPopup, ImagesModifyRequest images) {
+        if(images != null) {
+            if(images.getAddImages() != null)
+                addImages(findPopup, images.getAddImages());
+            if(images.getUpdateImages() != null)
+                modifyImages(findPopup, images.getUpdateImages());
+            if(images.getRemoveImages() != null)
+                removeImages(findPopup, images.getRemoveImages());
+        }
+    }
 
     public void addImages(Popup popup, List<ImageRequest> images) {
         saveImages(popup, images);
     }
-
-//    public List<ImageResponse> modifyImages(ImageModifyRequest request, String loginId) {
-//        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), loginId);
-//
-//        findPopup.modifyRepresentImgUrl(request.getRepresentUrl());
-//
-//        return modifyImagesUrl(request);
-//    }
 
     public List<ImageResponse> modifyImages(Popup popup, List<ImageResponse> updateImages) {
         return modifyImagesUrl(popup.getId(), updateImages);
@@ -196,5 +219,25 @@ public class PopupCommandService {
         return adminRepository.findById(adminId)
                 .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin"));
     }
+
+
+
+//    public PopupInfoResponse addImages(ImageAddRequest request, String loginId) {
+//        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), loginId);
+//
+//        saveImages(findPopup, request.getImages());
+//
+//        return PopupInfoResponse.of(findPopup);
+//    }
+
+
+
+//    public List<ImageResponse> modifyImages(ImageModifyRequest request, String loginId) {
+//        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), loginId);
+//
+//        findPopup.modifyRepresentImgUrl(request.getRepresentUrl());
+//
+//        return modifyImagesUrl(request);
+//    }
 
 }
