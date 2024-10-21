@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum RoleType {
-    INFLUENCER("ROLE_USER"), ADMIN("ROLE_ADMIN");
+    PORT("ROLE_PORT"), INFLUENCER("ROLE_USER"), ADMIN("ROLE_ADMIN");
 
     private final String roleType;
 
