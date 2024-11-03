@@ -4,6 +4,7 @@ import com.portnum.number.admin.dto.request.*;
 import com.portnum.number.admin.entity.Admin;
 import com.portnum.number.admin.dto.response.AdminInfoResponse;
 import com.portnum.number.admin.repository.AdminRepository;
+import com.portnum.number.global.common.enums.ExpiredTimeEnum;
 import com.portnum.number.global.common.service.ImageUploadService;
 import com.portnum.number.global.common.service.MailService;
 import com.portnum.number.global.common.service.RedisService;
@@ -13,6 +14,7 @@ import com.portnum.number.global.security.jwt.JwtTokenProvider;
 import com.portnum.number.global.utils.RandomUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,18 +59,18 @@ public class AdminCommandService {
 
     public boolean modifyPassword(AdminModifyPasswordRequest request, String accessToken) {
         Admin findAdmin = validateAdmin(request.getAdminId());
-        if(StringUtils.hasText(request.getOldPassword()) && passwordEncoder.matches(request.getOldPassword(), findAdmin.getPassword())){
+        if(isExistOldPassword(request, findAdmin) && StringUtils.hasText(request.getNewPassword())){
             findAdmin.modifyPassword(passwordEncoder.encode(request.getNewPassword()));
-            logoutProcess(accessToken, findAdmin);
-        } else if(!StringUtils.hasText(request.getOldPassword())){
+        } else if(StringUtils.hasText(request.getNewPassword())){
             findAdmin.modifyPassword(passwordEncoder.encode(request.getNewPassword()));
-            logoutProcess(accessToken, findAdmin);
         } else{
             return false;
         }
 
+        logoutProcess(accessToken, findAdmin);
         return true;
     }
+
 
 
     public boolean lostEmail(LostRequest request) {
@@ -108,6 +110,10 @@ public class AdminCommandService {
         }
     }
 
+    private boolean isExistOldPassword(AdminModifyPasswordRequest request, Admin findAdmin) {
+        return StringUtils.hasText(request.getOldPassword()) && passwordEncoder.matches(request.getOldPassword(), findAdmin.getPassword());
+    }
+
     private Admin validateAdmin(Long adminId) {
         return adminRepository.findById(adminId)
                 .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin"));
@@ -141,8 +147,9 @@ public class AdminCommandService {
     }
 
     private void logoutProcess(String accessToken, Admin findAdmin) {
-        redisService.deleteValues(findAdmin.getEmail());
-        long accessTokenValidityInSeconds = jwtTokenProvider.getAccessTokenValidityInSeconds();
+        redisService.deleteValues(findAdmin.getLoginId());
+        SecurityContextHolder.clearContext();
+        long accessTokenValidityInSeconds = ExpiredTimeEnum.ACCESS_TOKEN.getExpiredTime();
         redisService.setValues(accessToken, "logout", Duration.ofMillis(accessTokenValidityInSeconds));
     }
 }
