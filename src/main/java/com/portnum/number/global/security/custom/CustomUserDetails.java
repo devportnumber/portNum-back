@@ -37,13 +37,13 @@ public class CustomUserDetails extends Admin implements UserDetails {
         this.urlName = admin.getUrlName();
     }
 
-    private CustomUserDetails(String email, RoleType role){
-        this.email = email;
+    private CustomUserDetails(String loginId, RoleType role){
+        this.loginId = loginId;
         this.roleType = role;
     }
 
-    private CustomUserDetails(String email, RoleType role, String password) {
-        this.email = email;
+    private CustomUserDetails(String loginId, RoleType role, String password) {
+        this.loginId = loginId;
         this.roleType = role;
         this.password = password;
     }
@@ -52,8 +52,8 @@ public class CustomUserDetails extends Admin implements UserDetails {
         return new CustomUserDetails(admin);
     }
 
-    public static CustomUserDetails of(String email, RoleType role){
-        return new CustomUserDetails(email, role);
+    public static CustomUserDetails of(String loginId, RoleType role){
+        return new CustomUserDetails(loginId, role);
     }
 
     public static CustomUserDetails of(String email, RoleType role, String password) {
