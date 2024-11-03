@@ -1,18 +1,16 @@
 package com.portnum.number.global.security.jwt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portnum.number.admin.entity.RoleType;
 import com.portnum.number.global.common.dto.TokenDto;
 import com.portnum.number.global.common.dto.response.ResponseDto;
+import com.portnum.number.global.common.enums.ExpiredTimeEnum;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;
+import com.portnum.number.global.exception.JwtException;
 import com.portnum.number.global.security.custom.CustomUserDetails;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.io.Encoders;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -20,27 +18,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-/**
-        * JWT 토큰을 생성, 토큰 복호화 및 정보 추출, 토큰 유효성 검증 클래스
-        * jwt.secret는 토큰의 암호화, 복호화를 위한 secret key로 HS256 알고리즘 사용을 위해, 256비트보다 커야함.
-        * 한 단어에 1바이트이므로, 32글자 이상 설정.
-        */
-@Component
+import io.jsonwebtoken.Jwts;
+
 @Slf4j
+@Component
 public class JwtTokenProvider {
 
     public static final String BEARER = "Bearer";
@@ -49,8 +41,14 @@ public class JwtTokenProvider {
     public static final String BEARER_PREFIX = "Bearer ";
     private static final String AUTHORITIES_KEY = "auth";
 
-    @Value("${jwt.secret-key}")
-    private String secretKey;
+    private final SecretKey secretKey;
+    private final ObjectMapper objectMapper;
+
+    public JwtTokenProvider(@Value("${jwt.secret-key}") String secret, ObjectMapper objectMapper){
+        this.secretKey = new SecretKeySpec(
+                secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+        this.objectMapper = objectMapper;
+    }
 
     @Getter
     @Value("${jwt.accessToken-validity-in-seconds}")
@@ -60,42 +58,17 @@ public class JwtTokenProvider {
     @Value("${jwt.refreshToken-validity-in-seconds}")
     private long refreshTokenValidityInSeconds;
 
-    private Key key;
 
-    @PostConstruct
-    public void keyInit(){
-        String base64EncodedSecretKey = Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));
-        byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
-        this.accessTokenValidityInSeconds *= 1000;
-        this.refreshTokenValidityInSeconds *= 1000;
-    }
 
     // 유저 정보를 토대로 AccessToken, RefreshToken 생성
     public TokenDto generateToken(CustomUserDetails customUserDetails){
-        // 권한 가져오기
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(AUTHORITIES_KEY, customUserDetails.getRoleType().getRoleType());
-
-        Date accessValidity = getTokenValidityInSeconds(accessTokenValidityInSeconds);
-        Date refreshValidity = getTokenValidityInSeconds(refreshTokenValidityInSeconds);
-
         // AccessToken 생성
-        String accessToken = Jwts.builder()
-                .setClaims(claims)
-                .setSubject(customUserDetails.getUsername())
-                .setExpiration(accessValidity)
-                .setIssuedAt(Calendar.getInstance().getTime())
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+        String accessToken = this.createToken(
+                customUserDetails.getUsername(), customUserDetails.getRoleType().getRoleType(), ExpiredTimeEnum.ACCESS_TOKEN);
 
         // RefreshToken 생성
-        String refreshToken = Jwts.builder()
-                .setSubject(customUserDetails.getUsername())
-                .setIssuedAt(Calendar.getInstance().getTime())
-                .setExpiration(refreshValidity)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+        String refreshToken = this.createToken(
+                customUserDetails.getUsername(), customUserDetails.getRoleType().getRoleType(), ExpiredTimeEnum.REFRESH_TOKEN);
 
         return TokenDto.builder()
                 .grantType(BEARER)
@@ -106,30 +79,35 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    public Date getTokenValidityInSeconds(long tokenValidityInSeconds) {
-        long now = (new Date()).getTime();
-        return new Date(now + tokenValidityInSeconds);
+    private String createToken(String userName, String role, ExpiredTimeEnum expiredTimeEnum){
+        return Jwts.builder()
+                .claim(AUTHORITIES_KEY, role)
+                .subject(userName)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiredTimeEnum.getExpiredTime()))
+                .signWith(secretKey)
+                .compact();
     }
 
-    // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼냄
     public Authentication getAuthentication(String accessToken, HttpServletResponse response) throws IOException {
         // 토큰 복호화
-        Claims claims = parseClaims(accessToken);
-        if(claims.get(AUTHORITIES_KEY) == null){
-            sendErrorResponse(response, "Empty Authorized Token", Code.UNAUTHORIZED);
-        }
+        String roleString = getRole(accessToken);
 
-        String roleString = (String) claims.get(AUTHORITIES_KEY);
+        if(!StringUtils.hasText(roleString)){
+            throw new JwtException(Code.UNAUTHORIZED, "Empty Authorized Token");
+        }
 
         RoleType role;
         if(roleString.equals("ROLE_USER"))
             role = RoleType.INFLUENCER;
+        else if(roleString.equals("ROLE_PORT"))
+            role = RoleType.PORT;
         else
             role = RoleType.ADMIN;
 
 
-        CustomUserDetails customUserDetails = CustomUserDetails.of(
-                claims.getSubject(), role);
+        CustomUserDetails customUserDetails =
+                CustomUserDetails.of(getUserSubject(accessToken), role);
 
 
         log.info("# AuthUser.getRoles 권한 체크 = {}", customUserDetails.getAuthorities().toString());
@@ -139,44 +117,31 @@ public class JwtTokenProvider {
     }
 
     // 토큰 정보 검증
-    public boolean validateToken(String token, HttpServletResponse response) throws IOException {
+    public boolean validateToken(String token) throws IOException {
         try{
-            parseClaims(token);
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+            return true;
         } catch(MalformedJwtException e){
-            log.info("Invalid JWT token");
             log.trace("Invalid JWT token trace = {}", e);
-            sendErrorResponse(response, "손상된 토큰입니다.", Code.UNAUTHORIZED);
-            return false;
+//            sendErrorResponse(response, "손상된 토큰입니다.", Code.UNAUTHORIZED);
+            throw new com.portnum.number.global.exception.JwtException(Code.TOKEN_ERROR, "손상된 토큰입니다.");
         } catch (ExpiredJwtException e){
-            log.info("Expired JWT token");
             log.trace("Expired JWT token trace = {}", e);
-            sendErrorResponse(response, "만료된 토큰입니다.", Code.EXPIRE_ACCESS_TOKEN);
-            return false;
+            throw new com.portnum.number.global.exception.JwtException(Code.EXPIRE_ACCESS_TOKEN, "만료된 토큰입니다.");
         } catch (UnsupportedJwtException e){
-            log.info("Unsupported JWT token");
             log.trace("Unsupported JWT token trace = {}", e);
-            sendErrorResponse(response, "지원하지 않는 토큰입니다.", Code.UNAUTHORIZED);
-            return false;
+//            sendErrorResponse(response, "지원하지 않는 토큰입니다.", Code.UNAUTHORIZED);
+            throw new com.portnum.number.global.exception.JwtException(Code.TOKEN_ERROR, "지원하지 않는 토큰입니다.");
         } catch(IllegalArgumentException e){
-            log.info("JWT claims string is empty");
             log.trace("JWT claims string is empty trace = {}", e);
-            sendErrorResponse(response, "시그니처 검증에 실패한 토큰입니다.", Code.UNAUTHORIZED);
-            return false;
-        } catch(BadCredentialsException e){
-            log.info("Login Info Error");
-            log.trace("Login Info Error is empty trace = {}", e);
-            sendErrorResponse(response, "로그인 정보가 잘못되었습니다.", Code.UNAUTHORIZED);
-            return false;
+//            sendErrorResponse(response, "시그니처 검증에 실패한 토큰입니다.", Code.UNAUTHORIZED);
+            throw new JwtException(Code.TOKEN_ERROR, "시그니처 검증에 실패한 토큰입니다.");
+        } catch (SignatureException e){
+            log.trace("Invalid JWT token trace = {}", e);
+//            sendErrorResponse(response, "손상된 토큰입니다.", Code.UNAUTHORIZED);
+            throw new com.portnum.number.global.exception.JwtException(Code.TOKEN_ERROR, "손상된 토큰입니다.");
         }
-        return true;
-    }
-
-    public Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+//        return false;
     }
 
     public void accessTokenSetHeader(String accessToken, HttpServletResponse response){
@@ -209,16 +174,38 @@ public class JwtTokenProvider {
         throw new GlobalException(Code.EMPTY_REFRESH_TOKEN, "리프레시 토큰이 존재하지 않습니다.");
     }
 
-    // JWT 예외처리
+    public String getUserSubject(String token){
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
+
+    public String getRole(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get(AUTHORITIES_KEY, String.class);
+    }
+
+    public Boolean isExpired(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration()
+                .before(new Date());
+    }
+
     private void sendErrorResponse(HttpServletResponse response, String message, Code errorCode) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         response.setCharacterEncoding("utf-8");
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(objectMapper.writeValueAsString(new ResponseDto(false, errorCode.getCode(), message)));
-    }
-
-    public String getUserSubject(String token){
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
 }
