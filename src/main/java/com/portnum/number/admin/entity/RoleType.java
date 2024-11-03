@@ -11,4 +11,13 @@ public enum RoleType {
     RoleType(String roleType){
         this.roleType = roleType;
     }
+
+    public static RoleType fromRoleType(String roleType) {
+        for (RoleType role : RoleType.values()) {
+            if (role.getRoleType().equals(roleType)) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("Unknown role type: " + roleType);
+    }
 }
