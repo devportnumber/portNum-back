@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ import java.util.List;
 @Entity
 @Getter
 @SQLDelete(sql = "UPDATE Popup SET deleted = true WHERE popup_id = ?")
-@Where(clause = "deleted = false")
+@SQLRestriction("deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Popup extends BaseTimeEntity {
 
@@ -114,8 +115,8 @@ public class Popup extends BaseTimeEntity {
     public void modifyPopup(PopupModifyRequest request){
         this.name = request.getName();
         this.address = request.getAddress();
-        this.category =request.getCategory();
-        this.startDate =request.getStartDate();
+        this.category = request.getCategory();
+        this.startDate = request.getStartDate();
         this.endDate =request.getEndDate();
         this.operatingHours = request.getOperatingHours();
         this.stat = request.getStat();

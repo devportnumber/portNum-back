@@ -9,12 +9,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @SQLDelete(sql = "UPDATE Admin SET deleted = true WHERE admin_id = ?")
-@Where(clause = "deleted = false")
+//@Where(clause = "deleted = false")
+@SQLRestriction("deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Admin extends BaseTimeEntity {
 
@@ -69,7 +71,7 @@ public class Admin extends BaseTimeEntity {
         this.nickName = request.getNickName();
         this.name = request.getName();
         this.profileUrl = request.getProfileUrl();
-        this.roleType = RoleType.INFLUENCER;
+        this.roleType = RoleType.PORT;
         this.password = request.getPassword();
         this.loginId = request.getLoginId();
         this.urlName = urlName;

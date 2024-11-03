@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(UrlUtils.PERMITTED_URLS.toArray(new String[0])).permitAll()
-                                .anyRequest().hasAnyRole("USER", "ADMIN")
+                                .anyRequest().hasAnyRole( "PORT", "USER", "ADMIN")
                 );
 
         return httpSecurity.build();
