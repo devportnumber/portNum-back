@@ -1,4 +1,4 @@
-package com.portnum.number.global.common.config;
+package com.portnum.number.global.config;
 
 
 import org.springframework.beans.factory.annotation.Value;

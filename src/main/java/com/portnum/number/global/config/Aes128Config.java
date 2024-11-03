@@ -1,4 +1,4 @@
-package com.portnum.number.global.common.config;
+package com.portnum.number.global.config;
 
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;

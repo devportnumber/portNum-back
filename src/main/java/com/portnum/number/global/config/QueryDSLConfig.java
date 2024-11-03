@@ -1,4 +1,4 @@
-package com.portnum.number.global.common.config;
+package com.portnum.number.global.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

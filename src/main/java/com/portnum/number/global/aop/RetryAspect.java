@@ -43,6 +43,6 @@ public class RetryAspect {
             }
         }
 
-        throw new GlobalException(Code.INTERNAL_ERROR, "Retry 횟수 초과", exceptionHandler);
+        throw new GlobalException(Code.INTERNAL_ERROR, "Retry 횟수 초과");
     }
 }

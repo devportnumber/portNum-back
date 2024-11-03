@@ -1,32 +1,24 @@
-package com.portnum.number.global.common.config;
+package com.portnum.number.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.admin.service.AdminQueryService;
-import com.portnum.number.global.common.config.Aes128Config;
 import com.portnum.number.global.common.service.RedisService;
 import com.portnum.number.global.security.custom.*;
-import com.portnum.number.global.security.jwt.JwtAuthenticationFilter;
-import com.portnum.number.global.security.jwt.JwtTokenProvider;
-import com.portnum.number.global.security.jwt.JwtVerificationFilter;
+import com.portnum.number.global.security.jwt.*;
 import com.portnum.number.global.utils.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
+import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -44,8 +36,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final AdminRepository adminRepository;
-    private final AdminQueryService adminQueryService;
+    private final ObjectMapper objectMapper;
     private final Aes128Config aes128Config;
     private final RedisService redisService;
 
@@ -55,6 +46,7 @@ public class SecurityConfig {
         httpSecurity.httpBasic(HttpBasicConfigurer::disable)
                 .headers((headerConfig) -> headerConfig.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .formLogin(FormLoginConfigurer::disable)
+                .logout(LogoutConfigurer::disable)
                 .sessionManagement(sessionConfigurer -> sessionConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(entryPointConfigurer -> entryPointConfigurer.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .exceptionHandling(accessDeniedHandler -> accessDeniedHandler.accessDeniedHandler(new CustomAccessDeniedHandler()))
@@ -76,16 +68,11 @@ public class SecurityConfig {
             config.setAllowedMethods(Collections.singletonList("*"));
             config.setAllowedOriginPatterns(Collections.singletonList("*")); // ⭐️ 허용할 origin
             config.setAllowCredentials(true);
-            config.setExposedHeaders(Arrays.asList("Authorization", "Refresh"));
+            config.setExposedHeaders(List.of("Authorization", "Refresh"));
             UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", config);
 
             return source;
-    }
-
-    // JwtVerificationFilter 빈 생성
-    public JwtVerificationFilter jwtVerificationFilter() {
-        return new JwtVerificationFilter(jwtTokenProvider, redisService);
     }
 
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
@@ -93,17 +80,20 @@ public class SecurityConfig {
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager,
-                    jwtTokenProvider, adminQueryService, redisService, aes128Config);
+                    jwtTokenProvider, redisService, aes128Config);
 
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenProvider, redisService);
 
             jwtAuthenticationFilter.setFilterProcessesUrl("/auth/login");
-            jwtAuthenticationFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler());
+            jwtAuthenticationFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper));
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new LoginFailureHandler());
 
             builder
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+                    .addFilterBefore(new JwtReissueTokenFilter(jwtTokenProvider, redisService, aes128Config), JwtAuthenticationFilter.class)
+                    .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtReissueTokenFilter.class)
+                    .addFilterAfter(new CustomLogoutFilter(redisService, jwtTokenProvider), JwtAuthenticationFilter.class)
+                    .addFilterAfter(jwtVerificationFilter, CustomLogoutFilter.class);
         }
     }
 

@@ -1,8 +1,7 @@
-package com.portnum.number.global.common.config;
+package com.portnum.number.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.stereotype.Component;
 
 @Configuration
 class BcryptConfig implements EncryptHelper {

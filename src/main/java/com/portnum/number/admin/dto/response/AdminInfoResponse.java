@@ -5,8 +5,8 @@ import lombok.*;
 
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AdminInfoResponse {
 
     private Long adminId;
@@ -22,7 +22,7 @@ public class AdminInfoResponse {
     private String urlName;
 
 
-    public static AdminInfoResponse of(Admin admin){
+    public static AdminInfoResponse from(Admin admin){
         return AdminInfoResponse.builder()
                 .adminId(admin.getId())
                 .email(admin.getEmail())

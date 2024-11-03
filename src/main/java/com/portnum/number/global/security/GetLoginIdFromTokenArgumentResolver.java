@@ -24,7 +24,8 @@ public class GetLoginIdFromTokenArgumentResolver implements HandlerMethodArgumen
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         if(request == null){
             throw new GlobalException(Code.NOT_FOUND, "No HttpServletRequest found");
@@ -36,9 +37,6 @@ public class GetLoginIdFromTokenArgumentResolver implements HandlerMethodArgumen
             throw new GlobalException(Code.UNAUTHORIZED, "Not Found AccessToken");
         }
 
-        String userSubject = jwtTokenProvider.getUserSubject(authorizationHeader.substring(6));
-
-        return userSubject;
+        return jwtTokenProvider.getUserSubject(authorizationHeader.substring(6));
     }
-
 }

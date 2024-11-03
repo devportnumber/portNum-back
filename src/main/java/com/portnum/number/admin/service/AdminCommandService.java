@@ -43,7 +43,7 @@ public class AdminCommandService {
         Admin newAdmin = Admin.of(request, urlName);
         adminRepository.save(newAdmin);
 
-        return AdminInfoResponse.of(newAdmin);
+        return AdminInfoResponse.from(newAdmin);
     }
 
     public AdminInfoResponse modify(AdminModifyRequest request) {
@@ -52,7 +52,7 @@ public class AdminCommandService {
         updateAdminProfile(findAdmin.getProfileUrl(), request.getProfileUrl());
         findAdmin.modifyAdmin(request);
 
-        return AdminInfoResponse.of(findAdmin);
+        return AdminInfoResponse.from(findAdmin);
     }
 
     public boolean modifyPassword(AdminModifyPasswordRequest request, String accessToken) {
