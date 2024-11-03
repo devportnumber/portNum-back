@@ -5,8 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GlobalException extends RuntimeException {
-    // errorCode에 대한 getter
+public class FilterException extends RuntimeException{
     private final Code errorCode;
     private final String message;
 }
