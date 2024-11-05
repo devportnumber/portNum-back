@@ -91,7 +91,7 @@ public class PopupCommandService {
     public void removeSinglePopup(Long popupId, Long adminId, String loginId) {
         Popup findPopup = validatePopupAndGetWithImages(popupId, adminId, loginId);
 
-        List<Image> images = findPopup.getImages();
+        List<Image> images = imageRepository.findByPopupId(popupId);
         removeImageS3AndDb(images, findPopup.getId());
 
     }
@@ -153,16 +153,13 @@ public class PopupCommandService {
     }
 
     private void removeImageS3AndDb(List<Image> images, Long popupId) {
-        List<Long> imgIds = new ArrayList<>();
         List<String> imgUrls = new ArrayList<>();
 
         for(Image image : images){
             validatePopupImage(image, popupId);
-            imgIds.add(image.getId());
             imgUrls.add(image.getImgUrl());
-//            imageUploadService.deleteImage(image.getImgUrl());
         }
-        imageRepository.deleteAllByIdInBatch(imgIds);
+        imageRepository.deleteAllByPopupId(popupId);
         imageUploadService.deleteImages(imgUrls);
     }
 
