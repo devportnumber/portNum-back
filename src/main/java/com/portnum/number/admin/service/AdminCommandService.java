@@ -34,7 +34,6 @@ public class AdminCommandService {
     private final ImageUploadService imageUploadService;
     private final MailService mailService;
     private final RedisService redisService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     public AdminInfoResponse create(AdminCreateRequest request){
         validateEmailAndNickName(request.getEmail(), request.getNickName());
