@@ -1,11 +1,10 @@
 package com.portnum.number.popup.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.portnum.number.popup.entity.PopupCategory;
-import com.portnum.number.popup.entity.PopupStatus;
-import com.portnum.number.popup.entity.embeddable.Address;
-import com.portnum.number.popup.entity.embeddable.Point;
-import jakarta.validation.constraints.NotEmpty;
+import com.portnum.number.popup.domain.PopupCategory;
+import com.portnum.number.popup.domain.PopupStatus;
+import com.portnum.number.popup.domain.embeddable.Address;
+import com.portnum.number.popup.domain.embeddable.Point;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
 package com.portnum.number.global.security.custom;
 
-import com.portnum.number.admin.entity.RoleType;
+import com.portnum.number.admin.domain.RoleType;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;
 import lombok.extern.slf4j.Slf4j;

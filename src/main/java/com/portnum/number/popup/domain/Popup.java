@@ -1,19 +1,18 @@
-package com.portnum.number.popup.entity;
+package com.portnum.number.popup.domain;
 
-import com.portnum.number.admin.entity.Admin;
+import com.portnum.number.admin.domain.Admin;
 import com.portnum.number.global.common.converter.StringListConverter;
 import com.portnum.number.global.common.domain.BaseTimeEntity;
 import com.portnum.number.popup.dto.request.PopupCreateRequest;
 import com.portnum.number.popup.dto.request.PopupModifyRequest;
-import com.portnum.number.popup.entity.embeddable.Address;
-import com.portnum.number.popup.entity.embeddable.Point;
+import com.portnum.number.popup.domain.embeddable.Address;
+import com.portnum.number.popup.domain.embeddable.Point;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -88,14 +87,14 @@ public class Popup extends BaseTimeEntity {
     public static Popup of(PopupCreateRequest request, Admin admin){
         Popup newPopup = new Popup();
 
-        newPopup.modifyPopup(request, admin);
+        newPopup.initPopup(request, admin);
 
         return newPopup;
     }
 
 
     /* 수정 메서드 */
-    private void modifyPopup(PopupCreateRequest request, Admin admin){
+    private void initPopup(PopupCreateRequest request, Admin admin){
         this.name = request.getName();
         this.address = request.getAddress();
         this.category =request.getCategory();

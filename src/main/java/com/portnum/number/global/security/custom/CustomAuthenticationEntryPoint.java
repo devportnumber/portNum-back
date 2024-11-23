@@ -21,11 +21,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         log.error("인증되지 않은 사용자 접근");
-//        System.out.println(request.getHeader("Authorization"));
-//        response.setCharacterEncoding("utf-8");
-//        response.setStatus(HttpStatus.OK.value());
-//        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-//        response.getWriter().write(objectMapper.writeValueAsString(new ResponseDto(false, Code.UNAUTHORIZED.getCode(), "인증되지 않은 사용자의 접근")));
         throw new JwtException(Code.UNAUTHORIZED, "인증되지 않은 사용자의 접근");
     }
 

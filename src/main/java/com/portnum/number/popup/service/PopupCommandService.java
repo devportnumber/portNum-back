@@ -1,6 +1,6 @@
 package com.portnum.number.popup.service;
 
-import com.portnum.number.admin.entity.Admin;
+import com.portnum.number.admin.domain.Admin;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.global.common.service.ImageUploadService;
 import com.portnum.number.global.exception.Code;
@@ -8,8 +8,8 @@ import com.portnum.number.global.exception.GlobalException;
 import com.portnum.number.popup.dto.request.*;
 import com.portnum.number.popup.dto.response.ImageResponse;
 import com.portnum.number.popup.dto.response.PopupDetailResponse;
-import com.portnum.number.popup.entity.Image;
-import com.portnum.number.popup.entity.Popup;
+import com.portnum.number.popup.domain.Image;
+import com.portnum.number.popup.domain.Popup;
 import com.portnum.number.popup.repository.ImageRepository;
 import com.portnum.number.popup.repository.PopupRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,12 +50,7 @@ public class PopupCommandService {
         return PopupDetailResponse.of(newPopup);
     }
 
-//    public PopupInfoResponse modify(PopupModifyRequest request, String loginId) {
-//        Popup findPopup = validatePopupAdmin(request.getPopupId(), request.getAdminId(), loginId);
-//        findPopup.modifyPopup(request);
-//
-//        return PopupInfoResponse.of(findPopup);
-//    }
+
 
     @CachePut(value = "popupDetail", key = "#result.popupId", cacheManager = "popupCacheManager")
     public PopupDetailResponse modify(PopupModifyRequest request, String loginId) {

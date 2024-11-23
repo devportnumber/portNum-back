@@ -1,24 +1,20 @@
 package com.portnum.number.global.security.custom;
 
-import com.portnum.number.admin.entity.Admin;
-import com.portnum.number.admin.entity.RoleType;
+import com.portnum.number.admin.domain.Admin;
 import com.portnum.number.admin.repository.AdminRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CustomUserDetailService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
     private final AdminRepository adminRepository;
 
     /**
@@ -27,7 +23,8 @@ public class CustomUserDetailService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        Admin findAdmin = adminRepository.findByLoginId(loginId).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        Admin findAdmin = adminRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
         return CustomUserDetails.of(findAdmin);
     }

@@ -27,6 +27,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
+
+        if(shouldNotFilter(request)){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String accessToken = jwtTokenProvider.resolveAccessToken(request);
 
         if(!StringUtils.hasText(accessToken)){
@@ -41,11 +47,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 return;
             }
         } catch (JwtException e) {
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            response.setCharacterEncoding("utf-8");
-//            response.setStatus(HttpStatus.OK.value());
-//            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-//            response.getWriter().write(objectMapper.writeValueAsString(new ResponseDto(false, Code.VALIDATION_ERROR.getCode(), "Not Valid AccessToken")));
             throw new JwtException(e.getErrorCode(), e.getMessage());
         }
         filterChain.doFilter(request, response);
@@ -55,14 +56,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private void setAuthenticationToContext(String accessToken, HttpServletResponse response) throws java.io.IOException {
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken, response);
         log.info("Authentication: {}", authentication);
-//        System.out.println(authentication.getPrincipal().toString());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         log.info("# Token verification success!");
     }
 
     private boolean doNotLogout(String accessToken) {
         String isLogout = redisService.getValues(accessToken);
-//        log.info("isLogout: " + isLogout);
         return isLogout.equals("false");
     }
 

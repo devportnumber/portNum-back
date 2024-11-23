@@ -1,6 +1,6 @@
 package com.portnum.number.popup.repository;
 
-import com.portnum.number.popup.entity.Image;
+import com.portnum.number.popup.domain.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

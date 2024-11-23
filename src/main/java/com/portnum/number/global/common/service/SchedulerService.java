@@ -1,8 +1,8 @@
 package com.portnum.number.global.common.service;
 
 import com.portnum.number.global.utils.DateUtils;
-import com.portnum.number.popup.entity.Popup;
-import com.portnum.number.popup.entity.PopupStatus;
+import com.portnum.number.popup.domain.Popup;
+import com.portnum.number.popup.domain.PopupStatus;
 import com.portnum.number.popup.repository.PopupRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class SchedulerService {
     private final PopupRepository popupRepository;
 
     @Async
-    @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 2 * * ?", zone = "Asia/Seoul")
     @Transactional
     public void execute(){
         log.info("팝업 유효여부 수정 처리 작업 시작");

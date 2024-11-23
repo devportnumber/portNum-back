@@ -1,4 +1,4 @@
-package com.portnum.number.popup.entity;
+package com.portnum.number.popup.domain;
 
 public enum PopupCategory {
     BAKERY, CAFE, FASHION, GOODS, BAR, RESTAURANT, EXHIBITION,

@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomi
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 @RequiredArgsConstructor
 public class HibernateConfig {
+
     private final QueryInspector queryInspector;
 
     @Bean
@@ -18,4 +18,6 @@ public class HibernateConfig {
         return hibernateProperties ->
                 hibernateProperties.put(AvailableSettings.STATEMENT_INSPECTOR, queryInspector);
     }
+
 }
+

@@ -1,6 +1,6 @@
 package com.portnum.number.popup.service;
 
-import com.portnum.number.admin.entity.Admin;
+import com.portnum.number.admin.domain.Admin;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.global.common.dto.response.PageResponseDto;
 import com.portnum.number.global.exception.Code;
@@ -8,7 +8,7 @@ import com.portnum.number.global.exception.GlobalException;
 import com.portnum.number.popup.dto.PopupSearchCondition;
 import com.portnum.number.popup.dto.response.PopupDetailResponse;
 import com.portnum.number.popup.dto.response.PopupInfoResponse;
-import com.portnum.number.popup.entity.Popup;
+import com.portnum.number.popup.domain.Popup;
 import com.portnum.number.popup.repository.PopupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -52,7 +52,7 @@ public class PopupQueryService {
         int page = pageNo == 0 ? 0 : pageNo - 1;
         int pageLimit = 10;
 
-        System.out.println(searchCondition.getName());
+//        System.out.println(searchCondition.getName());
         Pageable pageable = PageRequest.of(page, pageLimit);
 
         Admin admin = validateAdminWithNickName(nickName);

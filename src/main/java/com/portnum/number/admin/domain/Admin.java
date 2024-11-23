@@ -1,4 +1,4 @@
-package com.portnum.number.admin.entity;
+package com.portnum.number.admin.domain;
 
 
 import com.portnum.number.admin.dto.request.AdminCreateRequest;
@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -59,14 +58,14 @@ public class Admin extends BaseTimeEntity {
     public static Admin of(AdminCreateRequest request, String urlName) {
         Admin newAdmin = new Admin();
 
-        newAdmin.modifyAdmin(request, urlName);
+        newAdmin.initAdmin(request, urlName);
 
         return newAdmin;
     }
 
 
     /* 수정 메서드 */
-    private void modifyAdmin(AdminCreateRequest request, String urlName) {
+    private void initAdmin(AdminCreateRequest request, String urlName) {
         this.email = request.getEmail();
         this.nickName = request.getNickName();
         this.name = request.getName();

@@ -1,6 +1,6 @@
 package com.portnum.number.admin.dto.response;
 
-import com.portnum.number.admin.entity.Admin;
+import com.portnum.number.admin.domain.Admin;
 import lombok.*;
 
 @Getter

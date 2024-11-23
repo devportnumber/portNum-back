@@ -1,6 +1,6 @@
 package com.portnum.number.admin.service;
 
-import com.portnum.number.admin.entity.Admin;
+import com.portnum.number.admin.domain.Admin;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;

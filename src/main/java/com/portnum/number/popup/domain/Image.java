@@ -1,4 +1,4 @@
-package com.portnum.number.popup.entity;
+package com.portnum.number.popup.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

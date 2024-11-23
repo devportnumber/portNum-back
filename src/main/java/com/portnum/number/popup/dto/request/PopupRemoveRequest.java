@@ -1,6 +1,5 @@
 package com.portnum.number.popup.dto.request;
 
-import com.portnum.number.popup.entity.Popup;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 

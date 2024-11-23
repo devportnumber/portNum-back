@@ -1,6 +1,6 @@
 package com.portnum.number.global.security.jwt;
 
-import com.portnum.number.admin.entity.RoleType;
+import com.portnum.number.admin.domain.RoleType;
 import com.portnum.number.global.common.dto.TokenDto;
 import com.portnum.number.global.common.service.RedisService;
 import com.portnum.number.global.config.Aes128Config;

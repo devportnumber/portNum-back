@@ -1,7 +1,7 @@
 package com.portnum.number.global.security.custom;
 
-import com.portnum.number.admin.entity.Admin;
-import com.portnum.number.admin.entity.RoleType;
+import com.portnum.number.admin.domain.Admin;
+import com.portnum.number.admin.domain.RoleType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

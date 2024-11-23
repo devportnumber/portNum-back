@@ -23,7 +23,7 @@ public class LoginResponse{
                 .adminId(customUserDetails.getId())
                 .loginId(customUserDetails.getLoginId())
                 .email(customUserDetails.getEmail())
-                .nickName(customUserDetails.getEmail())
+                .nickName(customUserDetails.getNickName())
                 .profileUrl(customUserDetails.getProfileUrl())
                 .isRqPwChange(customUserDetails.getIsRqPwChange())
                 .urlName(customUserDetails.getUrlName())
