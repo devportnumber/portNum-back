@@ -28,7 +28,7 @@ public class AdminQueryService {
     }
 
     public boolean validateLoginId(String loginId) {
-        return adminRepository.existsByNickName(loginId);
+        return adminRepository.existsByLoginId(loginId);
     }
 
     public String getNickName(String urlName) {

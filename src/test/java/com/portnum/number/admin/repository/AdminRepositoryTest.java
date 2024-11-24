@@ -3,6 +3,7 @@ package com.portnum.number.admin.repository;
 import com.portnum.number.admin.domain.Admin;
 import com.portnum.number.admin.dto.request.AdminCreateRequest;
 import com.portnum.number.config.JpaConfig;
+import com.portnum.number.fixture.AdminFixture;
 import com.portnum.number.global.config.JpaAuditingConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,29 +23,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class AdminRepositoryTest {
 
-
-    private AdminCreateRequest createRequest;
-
     @Autowired
     private AdminRepository adminRepository;
 
+    private Admin admin;
+
     @BeforeEach
-    public void setUp(){
-        createRequest = AdminCreateRequest.builder()
-                .loginId("test")
-                .email("test@naver.com")
-                .profileUrl("https://test.com")
-                .password("test")
-                .nickName("test")
-                .name("test")
-                .build();
+    void setUp(){
+        admin = AdminFixture.createAdmin();
     }
 
     @Test
     public void save_테스트() throws Exception{
-        //given
-        Admin admin = Admin.of(createRequest, "test");
-
         //when
         Admin savedAdmin = adminRepository.save(admin);
 
@@ -61,7 +51,6 @@ class AdminRepositoryTest {
     @Test
     public void findByLoginId_테스트() throws Exception{
         //given
-        Admin admin = Admin.of(createRequest, "test");
         adminRepository.save(admin);
 
         //when
@@ -75,9 +64,8 @@ class AdminRepositoryTest {
     }
 
     @Test
-    public void existsByEmail_테스트() {
+    public void existsByEmail_존재_테스트() {
         // given
-        Admin admin = Admin.of(createRequest, "test");
         adminRepository.save(admin);
 
         // when
@@ -88,9 +76,39 @@ class AdminRepositoryTest {
     }
 
     @Test
-    public void existsByNickName_테스트() {
+    public void existsByEmail_미존재_테스트() {
+        // when
+        boolean exists = adminRepository.existsByEmail("notexist@naver.com");
+
+        // then
+        assertThat(exists).isFalse();
+    }
+
+    @Test
+    public void existsByLoginId_존재_테스트() {
         // given
-        Admin admin = Admin.of(createRequest, "test");
+        adminRepository.save(admin);
+
+        // when
+        boolean exists = adminRepository.existsByLoginId(admin.getLoginId());
+
+        // then
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    public void existsByLoginId_미존재_테스트() {
+        // when
+        boolean exists = adminRepository.existsByLoginId("exist");
+
+        // then
+        assertThat(exists).isFalse();
+    }
+
+
+    @Test
+    public void existsByNickName_존재_테스트() {
+        // given
         adminRepository.save(admin);
 
         // when
@@ -101,9 +119,17 @@ class AdminRepositoryTest {
     }
 
     @Test
+    public void existsByNickName_미존재_테스트() {
+        // when
+        boolean exists = adminRepository.existsByNickName("notexist");
+
+        // then
+        assertThat(exists).isFalse();
+    }
+
+    @Test
     public void existsByEmailWithNickName_테스트() {
         // given
-        Admin admin = Admin.of(createRequest, "test");
         adminRepository.save(admin);
 
         // when
@@ -114,9 +140,35 @@ class AdminRepositoryTest {
     }
 
     @Test
+    public void existsByEmailAndLoginIdAndNickName_존재_테스트() {
+        // given
+        adminRepository.save(admin);
+
+        // when
+        boolean exists = adminRepository
+                .existsByEmailAndLoginIdAndNickName(admin.getEmail(), admin.getLoginId(), admin.getNickName());
+
+        // then
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    public void existsByEmailAndLoginIdAndNickName_미존재_테스트() {
+        // given
+        adminRepository.save(admin);
+
+        // when
+        boolean exists = adminRepository
+                .existsByEmailAndLoginIdAndNickName(admin.getEmail() + "false", admin.getLoginId() + "false", admin.getNickName() + "false");
+
+        // then
+        assertThat(exists).isFalse();
+    }
+
+
+    @Test
     public void findByEmailWithNickName_테스트() {
         // given
-        Admin admin = Admin.of(createRequest, "test");
         adminRepository.save(admin);
 
         // when
@@ -132,7 +184,6 @@ class AdminRepositoryTest {
     @Test
     public void findByNickName_테스트() {
         // given
-        Admin admin = Admin.of(createRequest, "test");
         adminRepository.save(admin);
 
         // when
@@ -148,7 +199,6 @@ class AdminRepositoryTest {
     @Test
     public void findByEmailWithName_테스트() {
         // given
-        Admin admin = Admin.of(createRequest, "test");
         adminRepository.save(admin);
 
         // when
@@ -164,7 +214,6 @@ class AdminRepositoryTest {
     @Test
     public void findByEmailWithLoginId_테스트() {
         // given
-        Admin admin = Admin.of(createRequest, "test");
         adminRepository.save(admin);
 
         // when
@@ -180,7 +229,6 @@ class AdminRepositoryTest {
     @Test
     public void findNickNameByUrlName_테스트() {
         // given
-        Admin admin = Admin.of(createRequest, "test");
         adminRepository.save(admin);
 
         // when
@@ -189,23 +237,5 @@ class AdminRepositoryTest {
         // then
         assertThat(nickName).isPresent();
         assertEquals(admin.getNickName(), nickName.get());
-    }
-
-    @Test
-    public void 존재하지_않는_Email_조회_테스트() {
-        // when
-        boolean exists = adminRepository.existsByEmail("notexist@naver.com");
-
-        // then
-        assertThat(exists).isFalse();
-    }
-
-    @Test
-    public void 존재하지_않는_NickName_조회_테스트() {
-        // when
-        boolean exists = adminRepository.existsByNickName("notexist");
-
-        // then
-        assertThat(exists).isFalse();
     }
 }

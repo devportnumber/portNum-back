@@ -5,18 +5,17 @@ import com.portnum.number.admin.dto.request.AdminCreateRequest;
 import com.portnum.number.admin.dto.request.AdminModifyRequest;
 import com.portnum.number.global.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @SQLDelete(sql = "UPDATE Admin SET deleted = true WHERE admin_id = ?")
-//@Where(clause = "deleted = false")
 @SQLRestriction("deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Admin extends BaseTimeEntity {
 
     @Id
@@ -55,30 +54,10 @@ public class Admin extends BaseTimeEntity {
 
 
     /* 생성 메서드 */
-    public static Admin of(AdminCreateRequest request, String urlName) {
-        Admin newAdmin = new Admin();
 
-        newAdmin.initAdmin(request, urlName);
-
-        return newAdmin;
-    }
-
-
-    /* 수정 메서드 */
-    private void initAdmin(AdminCreateRequest request, String urlName) {
-        this.email = request.getEmail();
-        this.nickName = request.getNickName();
-        this.name = request.getName();
-        this.profileUrl = request.getProfileUrl();
-        this.roleType = RoleType.PORT;
-        this.password = request.getPassword();
-        this.loginId = request.getLoginId();
-        this.urlName = urlName;
-    }
-
-    public void modifyAdmin(AdminModifyRequest request){
-        this.name = request.getName();
-        this.profileUrl = request.getProfileUrl();
+    public void modifyNameAndProfile(String name, String profileUrl){
+        this.name = name;
+        this.profileUrl = profileUrl;
     }
 
     public void modifyPassword(String password) {
@@ -89,4 +68,5 @@ public class Admin extends BaseTimeEntity {
     public void modifyIsRqPwChange(){
         this.isRqPwChange = Boolean.TRUE;
     }
+
 }

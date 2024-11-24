@@ -21,6 +21,12 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     @Query("select count(a) > 0 from Admin a where a.nickName = :nickName and a.deleted = false")
     boolean existsByNickName(String nickName);
 
+    @Query("select count(a) > 0 from Admin a where a.loginId = :loginId and a.deleted = false")
+    boolean existsByLoginId(String loginId);
+
+    @Query("select count(a) > 0 from Admin a where (a.email = :email or a.loginId = :loginId or a.nickName = :nickName) and a.deleted = false")
+    boolean existsByEmailAndLoginIdAndNickName(String email, String loginId, String nickName);
+
     @Query("select count(a) > 0 from Admin a where a.email = :email and a.nickName = :nickName and a.deleted = false")
     boolean existsByEmailWithNickName(String email, String nickName);
 
