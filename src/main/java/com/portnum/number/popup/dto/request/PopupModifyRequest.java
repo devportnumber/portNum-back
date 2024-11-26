@@ -6,12 +6,14 @@ import com.portnum.number.popup.domain.PopupStatus;
 import com.portnum.number.popup.domain.embeddable.Address;
 import com.portnum.number.popup.domain.embeddable.Point;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Builder
 public class PopupModifyRequest {
 
     @NotNull

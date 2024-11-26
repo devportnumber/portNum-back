@@ -71,7 +71,7 @@ public class PopupDetailResponse implements Serializable{
                 .detailDescription(popup.getDetailDescription())
                 .mapUrl(popup.getMapUrl())
                 .representImgUrl(popup.getRepresentImgUrl())
-                .images(popup.getImages().stream().map(ImageResponse::of).toList())
+                .images(popup.getImages() != null ? popup.getImages().stream().map(ImageResponse:: from).toList() : null)
                 .keywords(popup.getKeywords())
                 .regdt(popup.getCreatedDt().toLocalDate())
                 .build();

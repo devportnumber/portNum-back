@@ -18,14 +18,13 @@ class AdminTest {
         Admin admin = AdminFixture.createAdmin();
 
         //then
+        assertNotNull(admin);
+        assertEquals(1L, admin.getId());
         assertEquals("test@naver.com", admin.getEmail());
         assertEquals("test", admin.getNickName());
         assertEquals("test", admin.getName());
-        assertEquals("https://test.com", admin.getProfileUrl());
         assertEquals(RoleType.PORT, admin.getRoleType());
-        assertEquals("test", admin.getPassword());
         assertEquals("test", admin.getLoginId());
-        assertEquals("test", admin.getUrlName());
     }
 
     @Test

@@ -2,13 +2,13 @@ package com.portnum.number.popup.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Image {
 
     @Id
@@ -25,12 +25,18 @@ public class Image {
     private Popup popup;
 
     //===생성 메서드===//
-    public static Image of(Popup popup, String imgUrl){
+//    public static Image of(Popup popup, String imgUrl){
+//        Image image = new Image();
+//
+//        image.modifyUrl(imgUrl);
+//        popup.addImage(image);
+//
+//        return image;
+//    }
+
+    public static Image from(String imgUrl){
         Image image = new Image();
-
         image.modifyUrl(imgUrl);
-        popup.addImage(image);
-
         return image;
     }
 

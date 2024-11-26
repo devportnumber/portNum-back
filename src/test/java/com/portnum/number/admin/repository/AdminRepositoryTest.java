@@ -1,10 +1,11 @@
 package com.portnum.number.admin.repository;
 
 import com.portnum.number.admin.domain.Admin;
+import com.portnum.number.admin.domain.RoleType;
 import com.portnum.number.admin.dto.request.AdminCreateRequest;
-import com.portnum.number.config.JpaConfig;
 import com.portnum.number.fixture.AdminFixture;
 import com.portnum.number.global.config.JpaAuditingConfig;
+import com.portnum.number.global.config.QueryDSLConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import({JpaAuditingConfig.class, JpaConfig.class})
+@Import({JpaAuditingConfig.class, QueryDSLConfig.class})
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class AdminRepositoryTest {
 
@@ -35,6 +36,20 @@ class AdminRepositoryTest {
 
     @Test
     public void save_테스트() throws Exception{
+        //given
+        Admin admin = Admin.builder()
+                .loginId("test")
+                .email("test@naver.com")
+                .profileUrl("https://test.com")
+                .password("test")
+                .nickName("test")
+                .urlName("test")
+                .name("test")
+                .deleted(false)
+                .isRqPwChange(false)
+                .roleType(RoleType.PORT)
+                .build();
+
         //when
         Admin savedAdmin = adminRepository.save(admin);
 

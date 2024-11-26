@@ -8,9 +8,7 @@ import com.portnum.number.popup.dto.request.PopupModifyRequest;
 import com.portnum.number.popup.domain.embeddable.Address;
 import com.portnum.number.popup.domain.embeddable.Point;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -23,6 +21,8 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE Popup SET deleted = true WHERE popup_id = ?")
 @SQLRestriction("deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class Popup extends BaseTimeEntity {
 
     @Id
@@ -83,34 +83,7 @@ public class Popup extends BaseTimeEntity {
         getImages().add(image);
     }
 
-    /* 생성 메서드 */
-    public static Popup of(PopupCreateRequest request, Admin admin){
-        Popup newPopup = new Popup();
-
-        newPopup.initPopup(request, admin);
-
-        return newPopup;
-    }
-
-
     /* 수정 메서드 */
-    private void initPopup(PopupCreateRequest request, Admin admin){
-        this.name = request.getName();
-        this.address = request.getAddress();
-        this.category =request.getCategory();
-        this.startDate =request.getStartDate();
-        this.endDate =request.getEndDate();
-        this.operatingHours = request.getOperatingHours();
-        this.stat = request.getStat();
-        this.point = request.getPoint();
-        this.description = request.getDescription();
-        this.detailDescription = request.getDetailDescription();
-        this.mapUrl = request.getMapUrl();
-        this.keywords = request.getKeywords();
-        this.representImgUrl = request.getRepresentImgUrl();
-        this.admin = admin;
-    }
-
     public void modifyPopup(PopupModifyRequest request){
         this.name = request.getName();
         this.address = request.getAddress();
@@ -131,7 +104,12 @@ public class Popup extends BaseTimeEntity {
     }
 
 
-    public void modifyRepresentImgUrl(String representImgUrl){
-        this.representImgUrl = representImgUrl;
+    // 테스트 코드를 위해 필요
+    public void modifyCreatedDt(LocalDateTime createdDt){
+        this.createdDt = createdDt;
+    }
+
+    public void modifyUpdatedDt(LocalDateTime updatedDt){
+        this.updatedDt = updatedDt;
     }
 }

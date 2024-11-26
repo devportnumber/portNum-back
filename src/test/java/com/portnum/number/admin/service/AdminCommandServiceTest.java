@@ -45,9 +45,6 @@ class AdminCommandServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private ImageUploadService imageUploadService;
-
-    @Mock
     private MailService mailService;
 
     @Mock

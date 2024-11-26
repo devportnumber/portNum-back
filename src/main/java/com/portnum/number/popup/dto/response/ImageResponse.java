@@ -13,7 +13,7 @@ public class ImageResponse {
     private Long imgId;
     private String imgUrl;
 
-    public static ImageResponse of(Image image){
+    public static ImageResponse from(Image image){
         return ImageResponse.builder()
                 .imgId(image.getId())
                 .imgUrl(image.getImgUrl())

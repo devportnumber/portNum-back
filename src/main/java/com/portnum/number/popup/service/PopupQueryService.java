@@ -26,33 +26,10 @@ public class PopupQueryService {
     private final PopupRepository popupRepository;
     private final AdminRepository adminRepository;
 
-    public PageResponseDto read(Long adminId, int pageNo, PopupSearchCondition searchCondition) {
-        int page = pageNo == 0 ? 0 : pageNo - 1;
-        int pageLimit = 10;
-
-        Pageable pageable = PageRequest.of(page, pageLimit);
-
-        validateAdmin(adminId);
-
-        Page<Popup> popups = popupRepository.findPopups(adminId, pageable, searchCondition);
-
-        return PageResponseDto.of(popups, PopupInfoResponse :: of);
-    }
-
-    public PopupDetailResponse readPopupDetail(Long adminId, Long popupId) {
-        validateAdmin(adminId);
-
-        Popup findPopup = popupRepository.getPopupDetail(popupId)
-                .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Popup"));
-
-        return PopupDetailResponse.of(findPopup);
-    }
-
     public PageResponseDto read(String nickName, int pageNo, PopupSearchCondition searchCondition) {
         int page = pageNo == 0 ? 0 : pageNo - 1;
         int pageLimit = 10;
 
-//        System.out.println(searchCondition.getName());
         Pageable pageable = PageRequest.of(page, pageLimit);
 
         Admin admin = validateAdminWithNickName(nickName);
@@ -81,11 +58,6 @@ public class PopupQueryService {
         Page<Popup> popups = popupRepository.findAllPopup(pageable, searchCondition);
 
         return PageResponseDto.of(popups, PopupInfoResponse :: of);
-    }
-
-    private void validateAdmin(Long adminId) {
-        if(!adminRepository.existsById(adminId))
-            throw new GlobalException(Code.NOT_FOUND, "Not Found Admin");
     }
 
     private Admin validateAdminWithNickName(String nickName) {
