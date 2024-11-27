@@ -2,7 +2,7 @@ package com.portnum.number.popup.service;
 
 import com.portnum.number.admin.domain.Admin;
 import com.portnum.number.admin.repository.AdminRepository;
-import com.portnum.number.global.common.service.ImageUploadService;
+import com.portnum.number.global.service.ImageUploadService;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;
 import com.portnum.number.popup.dto.request.*;

@@ -1,9 +1,7 @@
 package com.portnum.number.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.portnum.number.admin.repository.AdminRepository;
-import com.portnum.number.admin.service.AdminQueryService;
-import com.portnum.number.global.common.service.RedisService;
+import com.portnum.number.global.service.RedisService;
 import com.portnum.number.global.security.custom.*;
 import com.portnum.number.global.security.jwt.*;
 import com.portnum.number.global.utils.UrlUtils;
@@ -25,7 +23,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

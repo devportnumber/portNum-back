@@ -5,7 +5,7 @@ import com.portnum.number.admin.domain.Admin;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.fixture.ImageFixture;
 import com.portnum.number.fixture.PopupFixture;
-import com.portnum.number.global.common.service.ImageUploadService;
+import com.portnum.number.global.service.ImageUploadService;
 import com.portnum.number.global.exception.GlobalException;
 import com.portnum.number.popup.domain.Image;
 import com.portnum.number.popup.domain.Popup;
@@ -28,7 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

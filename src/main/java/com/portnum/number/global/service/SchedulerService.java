@@ -1,4 +1,4 @@
-package com.portnum.number.global.common.service;
+package com.portnum.number.global.service;
 
 import com.portnum.number.global.utils.DateUtils;
 import com.portnum.number.popup.domain.Popup;

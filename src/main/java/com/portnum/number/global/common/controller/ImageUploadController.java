@@ -2,8 +2,7 @@ package com.portnum.number.global.common.controller;
 
 import com.portnum.number.global.common.dto.response.DataResponseDto;
 import com.portnum.number.global.common.dto.response.PreSignedUrlResponse;
-import com.portnum.number.global.common.provider.S3PreSignedUrlProvider;
-import com.portnum.number.global.common.service.ImageUploadService;
+import com.portnum.number.global.service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,12 +1,11 @@
 package com.portnum.number.global.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.portnum.number.admin.service.AdminQueryService;
 import com.portnum.number.global.common.enums.ExpiredTimeEnum;
 import com.portnum.number.global.config.Aes128Config;
 import com.portnum.number.global.common.dto.LoginDto;
 import com.portnum.number.global.common.dto.TokenDto;
-import com.portnum.number.global.common.service.RedisService;
+import com.portnum.number.global.service.RedisService;
 import com.portnum.number.global.security.custom.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

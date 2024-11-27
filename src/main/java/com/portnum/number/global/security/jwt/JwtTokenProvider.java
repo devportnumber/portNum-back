@@ -8,6 +8,7 @@ import com.portnum.number.global.exception.JwtException;
 import com.portnum.number.global.security.custom.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.security.UnsupportedKeyException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;

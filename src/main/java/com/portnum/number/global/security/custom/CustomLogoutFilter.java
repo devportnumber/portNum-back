@@ -1,23 +1,18 @@
 package com.portnum.number.global.security.custom;
 
-import com.portnum.number.global.common.dto.response.ResponseDto;
 import com.portnum.number.global.common.enums.ExpiredTimeEnum;
-import com.portnum.number.global.common.service.RedisService;
+import com.portnum.number.global.service.RedisService;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.JwtException;
 import com.portnum.number.global.security.jwt.JwtTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;

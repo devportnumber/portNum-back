@@ -197,7 +197,4 @@ class AdminCommandControllerTest {
 
         verify(adminCommandService, times(1)).lostPassword(any(LostPasswordRequest.class));
     }
-
-
-
 }

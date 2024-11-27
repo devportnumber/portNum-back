@@ -5,9 +5,8 @@ import com.portnum.number.admin.dto.request.*;
 import com.portnum.number.admin.dto.response.AdminInfoResponse;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.fixture.AdminFixture;
-import com.portnum.number.global.common.service.ImageUploadService;
-import com.portnum.number.global.common.service.MailService;
-import com.portnum.number.global.common.service.RedisService;
+import com.portnum.number.global.service.MailService;
+import com.portnum.number.global.service.RedisService;
 import com.portnum.number.global.exception.GlobalException;
 import com.portnum.number.global.utils.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,15 +16,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.mockito.Mockito.mockStatic;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.Random;
 
-import static com.mysema.commons.lang.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

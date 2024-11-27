@@ -64,4 +64,6 @@ public class PopupQueryService {
         return adminRepository.findByNickName(nickName)
                 .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin"));
     }
+
+
 }

@@ -1,6 +1,6 @@
 package com.portnum.number.global.security.jwt;
 
-import com.portnum.number.global.common.service.RedisService;
+import com.portnum.number.global.service.RedisService;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.JwtException;
 import com.portnum.number.global.utils.UrlUtils;
