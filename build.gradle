@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'jacoco'
 }
 
 group = 'com.portnum'
@@ -10,6 +11,63 @@ version = '0.0.1-SNAPSHOT'
 java {
 	sourceCompatibility = '17'
 }
+
+jacoco{
+	toolVersion = "0.8.10"
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports{
+		xml.required = true
+		html.required = true
+		csv.required = false
+	}
+
+	def Qdomains = []
+	for(qPattern in "**/QA" .. "**/QZ"){
+		Qdomains.add(qPattern+"*")
+	}
+
+	afterEvaluate {
+
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it,
+					exclude: [] + Qdomains)
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	def Qdomains = []
+	for (qPattern in "*.QA".."*.QZ") {  // qPattern = "*.QA","*.QB","*.QC", ... "*.QZ"
+		Qdomains.add(qPattern + "*")
+	}
+
+
+
+	violationRules {
+		rule {
+			enabled = true
+			element = 'CLASS'
+
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.00
+			}
+
+			limit {
+				counter = 'METHOD'
+				value = 'COVEREDRATIO'
+				minimum = 0.00
+			}
+
+			excludes = [] + Qdomains
+		}
+	}
+}
+
 
 repositories {
 	mavenCentral()
@@ -68,8 +126,45 @@ dependencies {
 
 }
 
+task testAndGenerateReport {
+	group 'verification'
+	description 'test w/ jacoco'
+
+	dependsOn ':test', ':jacocoTestReport', ':jacocoTestCoverageVerification'
+
+	tasks.jacocoTestReport.mustRunAfter tasks.test
+	tasks.jacocoTestCoverageVerification.mustRunAfter tasks.jacocoTestReport
+}
+
+jacocoTestReport {
+	// 결과 리포트에서 제외할 클래스들
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, excludes: [
+					'**/XXXApplication.class'
+			])
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			// 제외할 클래스들
+			excludes = [
+					'*.XXXApplication'
+			]
+		}
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	finalizedBy 'jacocoTestCoverageVerification'
 }
 
 jar { enabled = false }

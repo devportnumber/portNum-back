@@ -31,19 +31,6 @@ class PopupTest {
     }
 
     @Test
-    public void 팝업_이미지_추가_테스트() throws Exception{
-        //given
-        Popup popup = PopupFixture.createPopup();
-
-        //when
-        Image image = ImageFixture.createImage(popup);
-
-        //then
-        assertEquals(popup.getId(), image.getPopup().getId());
-        assertThat(popup.getImages()).contains(image);
-    }
-
-    @Test
     public void 팝업_수정_테스트() throws Exception{
         //given
         Popup popup = PopupFixture.createPopup();

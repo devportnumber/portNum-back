@@ -15,7 +15,7 @@ import java.time.Duration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.yml",
+@TestPropertySource(locations = "classpath:application.yml",
     properties = {
         "jasypt.encryptor.password=portNumber"
     }

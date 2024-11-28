@@ -5,6 +5,7 @@ import com.portnum.number.admin.dto.request.*;
 import com.portnum.number.admin.dto.response.AdminInfoResponse;
 import com.portnum.number.admin.repository.AdminRepository;
 import com.portnum.number.fixture.AdminFixture;
+import com.portnum.number.global.service.ImageUploadService;
 import com.portnum.number.global.service.MailService;
 import com.portnum.number.global.service.RedisService;
 import com.portnum.number.global.exception.GlobalException;
@@ -39,6 +40,9 @@ class AdminCommandServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private ImageUploadService imageUploadService;
 
     @Mock
     private MailService mailService;
