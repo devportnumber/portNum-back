@@ -60,7 +60,6 @@ jacocoTestCoverageVerification {
 //		}
 //
 //	}
-
 	violationRules {
 		rule {
 			enabled = true
@@ -77,6 +76,7 @@ jacocoTestCoverageVerification {
 				value = 'COVEREDRATIO'
 				minimum = 0.00
 			}
+			excludes = [] + Qdomains
 		}
 	}
 }

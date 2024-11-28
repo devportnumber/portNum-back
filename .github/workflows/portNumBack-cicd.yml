@@ -55,11 +55,14 @@ jobs:
         run: |
           mkdir -p ./src/main/resources  # 디렉토리 생성
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
+
+          mkdir -p ./src/test/resources
+          echo "${{ secrets.APPLICATION_TEST_YML }}" > ./src/test/resources/application.yml
   
       - name: Project build
         env:
           jasypt.encryptor.password: ${{ secrets.JASYPT_PASSWORD }}
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
         shell: bash
   
       - name: Build, tag, and push image to Amazon ECR
