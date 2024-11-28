@@ -42,6 +42,8 @@ public class JwtReissueTokenFilter extends OncePerRequestFilter {
                 isExpired = jwtTokenProvider.isExpired(accessToken);
             } catch (ExpiredJwtException e){
                 isExpired = true;
+            } catch (Exception e){
+                throw new JwtException(Code.TOKEN_ERROR, "Token Error");
             }
 
             if(!isExpired){

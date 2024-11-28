@@ -44,7 +44,22 @@ jacocoTestCoverageVerification {
 		Qdomains.add(qPattern + "*")
 	}
 
-
+//	violationRules {
+//		rule {
+//			enabled = true
+//			element = 'CLASS'
+//
+//			limit {
+//				counter = 'LINE'
+//				value = 'COVEREDRATIO'
+//				minimum = 0.60
+//			}
+//
+//			excludes = [] + Qdomains
+//
+//		}
+//
+//	}
 
 	violationRules {
 		rule {
@@ -62,8 +77,6 @@ jacocoTestCoverageVerification {
 				value = 'COVEREDRATIO'
 				minimum = 0.00
 			}
-
-			excludes = [] + Qdomains
 		}
 	}
 }
