@@ -59,7 +59,7 @@ jobs:
       - name: Project build
         env:
           jasypt.encryptor.password: ${{ secrets.JASYPT_PASSWORD }}
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
         shell: bash
   
       - name: Build, tag, and push image to Amazon ECR
