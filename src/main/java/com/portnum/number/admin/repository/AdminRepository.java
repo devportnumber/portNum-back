@@ -1,6 +1,6 @@
 package com.portnum.number.admin.repository;
 
-import com.portnum.number.admin.entity.Admin;
+import com.portnum.number.admin.domain.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +20,12 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     @Query("select count(a) > 0 from Admin a where a.nickName = :nickName and a.deleted = false")
     boolean existsByNickName(String nickName);
+
+    @Query("select count(a) > 0 from Admin a where a.loginId = :loginId and a.deleted = false")
+    boolean existsByLoginId(String loginId);
+
+    @Query("select count(a) > 0 from Admin a where (a.email = :email or a.loginId = :loginId or a.nickName = :nickName) and a.deleted = false")
+    boolean existsByEmailAndLoginIdAndNickName(String email, String loginId, String nickName);
 
     @Query("select count(a) > 0 from Admin a where a.email = :email and a.nickName = :nickName and a.deleted = false")
     boolean existsByEmailWithNickName(String email, String nickName);

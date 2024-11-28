@@ -1,9 +1,11 @@
 package com.portnum.number.admin.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class AdminCreateRequest {
 
     @NotBlank

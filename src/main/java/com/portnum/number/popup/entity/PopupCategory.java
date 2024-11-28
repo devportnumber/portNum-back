@@ -1,7 +1,0 @@
-package com.portnum.number.popup.entity;
-
-public enum PopupCategory {
-    BAKERY, CAFE, FASHION, GOODS, BAR, RESTAURANT, EXHIBITION,
-    CHINESE_BLK, JAPANESE_BLK, KOREAN_BLK, WESTERN_BLK,
-    CHINESE_WHT, JAPANESE_WHT, KOREAN_WHT, WESTERN_WHT
-}

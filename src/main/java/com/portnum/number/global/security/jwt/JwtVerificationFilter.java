@@ -1,9 +1,8 @@
 package com.portnum.number.global.security.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.portnum.number.global.common.dto.response.ResponseDto;
-import com.portnum.number.global.common.service.RedisService;
+import com.portnum.number.global.service.RedisService;
 import com.portnum.number.global.exception.Code;
+import com.portnum.number.global.exception.JwtException;
 import com.portnum.number.global.utils.UrlUtils;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
@@ -12,54 +11,43 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.util.List;
-
-/**
- * OncePerRequestFilter는 각 HTTP 요청에 대해 한 번만 실행되는 것을 보장.
- * HTTP 요청마다 JWT를 검증하는 것은 비효율적이기 때문.
- */
 @Slf4j
 @RequiredArgsConstructor
 public class JwtVerificationFilter extends OncePerRequestFilter {
 
-    private static final List<String> EXCLUDE_URL =
-            List.of("/", "/h2", "/auth/login", "/docs/index.html", "/admin/signup", "/admin/valid", "/admin/lost", "/admin/health", "/admin/image" , "/admin/reissue", "/admin/popup/api");
-
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
 
-    // JWT 인증 정보를 현재 쓰레드의 SecurityContext에 저장(가입/로그인/재발급 Request 제외)
-    // HTTP 요청에서 JWT를 꺼내 검증한 후 검증이 되면 SecurityContext에 저장
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
-        try {
-            String accessToken = jwtTokenProvider.resolveAccessToken(request);
-//            String encryptedRefreshToken = jwtTokenProvider.resolveRefreshToken(request);
-//            boolean b = jwtTokenProvider.validateToken(accessToken, response);
-//            log.info("accessToken: {}, boolean: {}", accessToken, b);
 
-            if(StringUtils.hasText(accessToken) && doNotLogout(accessToken) && jwtTokenProvider.validateToken(accessToken, response)){
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
+
+        if(shouldNotFilter(request)){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String accessToken = jwtTokenProvider.resolveAccessToken(request);
+
+        if(!StringUtils.hasText(accessToken)){
+            throw new JwtException(Code.TOKEN_ERROR, "Empty Access Token");
+        }
+
+        try {
+            if(jwtTokenProvider.validateToken(accessToken) && doNotLogout(accessToken)){
                     setAuthenticationToContext(accessToken, response);
             } else{
+                filterChain.doFilter(request, response);
                 return;
             }
-        } catch (RuntimeException e) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            response.setCharacterEncoding("utf-8");
-            response.setStatus(HttpStatus.OK.value());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.getWriter().write(objectMapper.writeValueAsString(new ResponseDto(false, Code.VALIDATION_ERROR.getCode(), "Not Valid AccessToken")));
-            return;
+        } catch (JwtException e) {
+            throw new JwtException(e.getErrorCode(), e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
@@ -68,14 +56,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private void setAuthenticationToContext(String accessToken, HttpServletResponse response) throws java.io.IOException {
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken, response);
         log.info("Authentication: {}", authentication);
-//        System.out.println(authentication.getPrincipal().toString());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         log.info("# Token verification success!");
     }
 
     private boolean doNotLogout(String accessToken) {
         String isLogout = redisService.getValues(accessToken);
-        log.info("isLogout: " + isLogout);
         return isLogout.equals("false");
     }
 

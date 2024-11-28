@@ -1,7 +1,7 @@
 package com.portnum.number.popup.dto.response;
 
 
-import com.portnum.number.popup.entity.Image;
+import com.portnum.number.popup.domain.Image;
 import lombok.*;
 
 @Getter
@@ -13,7 +13,7 @@ public class ImageResponse {
     private Long imgId;
     private String imgUrl;
 
-    public static ImageResponse of(Image image){
+    public static ImageResponse from(Image image){
         return ImageResponse.builder()
                 .imgId(image.getId())
                 .imgUrl(image.getImgUrl())

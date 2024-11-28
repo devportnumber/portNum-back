@@ -1,12 +1,9 @@
 package com.portnum.number.popup.repository;
 
-import com.portnum.number.popup.dto.PopupSearchCondition;
-import com.portnum.number.popup.entity.Popup;
-import org.springframework.data.domain.Pageable;
+import com.portnum.number.popup.domain.Popup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +20,4 @@ public interface PopupRepository extends JpaRepository<Popup, Long>, PopupCustom
     @Query("select distinct(p) from Popup p left join fetch p.images where p.id =:popupId and p.deleted = false")
     Optional<Popup> getPopupDetail(Long popupId);
 
-//    @Query("select distinct(p) from Popup p join fetch p.admin ")
-//    Optional<Popup> findByIdWithImages(Long popupId);
 }

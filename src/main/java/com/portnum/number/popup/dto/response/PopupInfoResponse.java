@@ -1,10 +1,10 @@
 package com.portnum.number.popup.dto.response;
 
-import com.portnum.number.popup.entity.Popup;
-import com.portnum.number.popup.entity.PopupCategory;
-import com.portnum.number.popup.entity.PopupStatus;
-import com.portnum.number.popup.entity.embeddable.Address;
-import com.portnum.number.popup.entity.embeddable.Point;
+import com.portnum.number.popup.domain.Popup;
+import com.portnum.number.popup.domain.PopupCategory;
+import com.portnum.number.popup.domain.PopupStatus;
+import com.portnum.number.popup.domain.embeddable.Address;
+import com.portnum.number.popup.domain.embeddable.Point;
 import lombok.*;
 
 import java.time.LocalDate;

@@ -16,24 +16,6 @@ public class PopupQueryController {
 
     private final PopupQueryService popupQueryService;
 
-//    @GetMapping("/api/{adminId}")
-//    public DataResponseDto popupList(
-//            @PathVariable("adminId") Long adminId,
-//            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
-//            PopupSearchCondition searchCondition
-//    ){
-//        PageResponseDto response = popupQueryService.read(adminId, pageNo, searchCondition);
-//
-//        return DataResponseDto.of(response);
-//    }
-//
-//    @GetMapping("/api/{adminId}/{popupId}")
-//    public DataResponseDto popupDetail(@PathVariable("adminId") Long adminId, @PathVariable("popupId") Long popupId){
-//        PopupDetailResponse response = popupQueryService.readPopupDetail(adminId, popupId);
-//
-//        return DataResponseDto.of(response);
-//    }
-
     @GetMapping("/api/{nickName}")
     public DataResponseDto popupList(
             @PathVariable("nickName") String nickName,

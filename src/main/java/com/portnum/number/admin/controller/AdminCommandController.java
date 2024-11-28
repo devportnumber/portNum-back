@@ -34,7 +34,8 @@ public class AdminCommandController {
 
     @PatchMapping("/password")
     public DataResponseDto modifyPassword(@Valid @RequestBody AdminModifyPasswordRequest request, HttpServletRequest httpServletRequest){
-        boolean response = adminCommandService.modifyPassword(request, jwtTokenProvider.resolveAccessToken(httpServletRequest));
+        boolean response = adminCommandService.modifyPassword(request,
+                jwtTokenProvider.resolveAccessToken(httpServletRequest));
 
         return DataResponseDto.of(response);
     }

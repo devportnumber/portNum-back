@@ -1,9 +1,9 @@
 package com.portnum.number.popup.repository;
 
 import com.portnum.number.popup.dto.PopupSearchCondition;
-import com.portnum.number.popup.entity.Popup;
-import com.portnum.number.popup.entity.PopupCategory;
-import com.portnum.number.popup.entity.PopupStatus;
+import com.portnum.number.popup.domain.Popup;
+import com.portnum.number.popup.domain.PopupCategory;
+import com.portnum.number.popup.domain.PopupStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,7 +17,7 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.portnum.number.popup.entity.QPopup.*;
+import static com.portnum.number.popup.domain.QPopup.*;
 
 @Repository
 @RequiredArgsConstructor

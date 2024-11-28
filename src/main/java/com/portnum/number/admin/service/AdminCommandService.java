@@ -1,18 +1,20 @@
 package com.portnum.number.admin.service;
 
+import com.portnum.number.admin.domain.RoleType;
 import com.portnum.number.admin.dto.request.*;
-import com.portnum.number.admin.entity.Admin;
+import com.portnum.number.admin.domain.Admin;
 import com.portnum.number.admin.dto.response.AdminInfoResponse;
 import com.portnum.number.admin.repository.AdminRepository;
-import com.portnum.number.global.common.service.ImageUploadService;
-import com.portnum.number.global.common.service.MailService;
-import com.portnum.number.global.common.service.RedisService;
+import com.portnum.number.global.common.enums.ExpiredTimeEnum;
+import com.portnum.number.global.service.ImageUploadService;
+import com.portnum.number.global.service.MailService;
+import com.portnum.number.global.service.RedisService;
 import com.portnum.number.global.exception.Code;
 import com.portnum.number.global.exception.GlobalException;
-import com.portnum.number.global.security.jwt.JwtTokenProvider;
 import com.portnum.number.global.utils.RandomUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,43 +34,55 @@ public class AdminCommandService {
     private final ImageUploadService imageUploadService;
     private final MailService mailService;
     private final RedisService redisService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     public AdminInfoResponse create(AdminCreateRequest request){
-        validateEmailAndNickName(request.getEmail(), request.getNickName());
+        validateEmailAndNickNameAndLoginId(request.getEmail(), request.getNickName(),
+                request.getLoginId());
 
         request.modifyPassword(passwordEncoder.encode(request.getPassword()));
         String urlName = RandomUtils.generateAlphaNumericRandomCode();
 
-        Admin newAdmin = Admin.of(request, urlName);
-        adminRepository.save(newAdmin);
+//        Admin newAdmin = Admin.of(request, urlName);
 
-        return AdminInfoResponse.of(newAdmin);
+        Admin newAdmin = Admin.builder()
+                .email(request.getEmail())
+                .nickName(request.getNickName())
+                .name(request.getName())
+                .profileUrl(request.getProfileUrl())
+                .roleType(RoleType.PORT)
+                .password(request.getPassword())
+                .loginId(request.getLoginId())
+                .urlName(urlName)
+                .build();
+
+        newAdmin = adminRepository.save(newAdmin);
+
+        return AdminInfoResponse.from(newAdmin);
     }
 
     public AdminInfoResponse modify(AdminModifyRequest request) {
         Admin findAdmin = validateAdmin(request.getAdminId());
 
         updateAdminProfile(findAdmin.getProfileUrl(), request.getProfileUrl());
-        findAdmin.modifyAdmin(request);
+        findAdmin.modifyNameAndProfile(request.getName(), request.getProfileUrl());
 
-        return AdminInfoResponse.of(findAdmin);
+        return AdminInfoResponse.from(findAdmin);
     }
 
     public boolean modifyPassword(AdminModifyPasswordRequest request, String accessToken) {
         Admin findAdmin = validateAdmin(request.getAdminId());
-        if(StringUtils.hasText(request.getOldPassword()) && passwordEncoder.matches(request.getOldPassword(), findAdmin.getPassword())){
+        if(isExistOldPassword(request, findAdmin) && StringUtils.hasText(request.getNewPassword())){
             findAdmin.modifyPassword(passwordEncoder.encode(request.getNewPassword()));
-            logoutProcess(accessToken, findAdmin);
-        } else if(!StringUtils.hasText(request.getOldPassword())){
+        } else if(StringUtils.hasText(request.getNewPassword())){
             findAdmin.modifyPassword(passwordEncoder.encode(request.getNewPassword()));
-            logoutProcess(accessToken, findAdmin);
         } else{
             return false;
         }
 
+        logoutProcess(accessToken, findAdmin);
         return true;
     }
+
 
 
     public boolean lostEmail(LostRequest request) {
@@ -108,24 +122,23 @@ public class AdminCommandService {
         }
     }
 
+    private boolean isExistOldPassword(AdminModifyPasswordRequest request, Admin findAdmin) {
+        return StringUtils.hasText(request.getOldPassword()) && passwordEncoder.matches(request.getOldPassword(), findAdmin.getPassword());
+    }
+
     private Admin validateAdmin(Long adminId) {
         return adminRepository.findById(adminId)
                 .orElseThrow(() -> new GlobalException(Code.NOT_FOUND, "Not Found Admin"));
     }
 
-    private void validateEmailAndNickName(String email, String nickName){
+    private void validateEmailAndNickNameAndLoginId(String email, String nickName, String loginId){
 //        log.info("{}", adminRepository.existsByEmail(email));
-        if(adminRepository.existsByEmail(email) || adminRepository.existsByNickName(nickName))
-            throw new GlobalException(Code.VALIDATION_ERROR, "Email Or NickName Already Exists");
+        if(adminRepository.existsByEmailAndLoginIdAndNickName(email, loginId, nickName))
+            throw new GlobalException(Code.VALIDATION_ERROR, "Email Or NickName Or LoginId Already Exists");
     }
 
     private boolean existsEmailAndNickName(LostRequest request){
         return adminRepository.existsByEmailWithNickName(request.getEmail(), request.getNickName());
-    }
-
-    private Admin findEmailAndNickName(LostRequest request) {
-        return adminRepository.findByEmailWithNickName(
-                request.getEmail(), request.getNickName()).orElse(null);
     }
 
     private Admin findEmailAndLoginId(LostPasswordRequest request) {
@@ -136,13 +149,14 @@ public class AdminCommandService {
     private Admin findEmailAndName(LostLoginIdRequest request) {
         return adminRepository.findByEmailWithName(
                 request.getEmail(), request.getName()).orElseThrow(() ->{
-                    throw  new GlobalException(Code.VALIDATION_ERROR, "User Not Found");
+                    throw  new GlobalException(Code.VALIDATION_ERROR, "Not Found Admin");
         });
     }
 
     private void logoutProcess(String accessToken, Admin findAdmin) {
-        redisService.deleteValues(findAdmin.getEmail());
-        long accessTokenValidityInSeconds = jwtTokenProvider.getAccessTokenValidityInSeconds();
+        redisService.deleteValues(findAdmin.getLoginId());
+        SecurityContextHolder.clearContext();
+        long accessTokenValidityInSeconds = ExpiredTimeEnum.ACCESS_TOKEN.getExpiredTime();
         redisService.setValues(accessToken, "logout", Duration.ofMillis(accessTokenValidityInSeconds));
     }
 }
