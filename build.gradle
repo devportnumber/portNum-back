@@ -51,7 +51,7 @@ dependencies {
 
 	/* Redis 추가 */
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	testImplementation 'it.ozimov:embedded-redis:0.7.3'
+	testImplementation 'it.ozimov:embedded-redis:0.7.2'
 
 	/* SMTP 설정 */
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -61,6 +61,10 @@ dependencies {
 
 	/* Java 8 날짜/시간 타입 처리를 위한 Jackson 모듈 추가 */
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+	/* testcontainers */
+	testImplementation "org.testcontainers:testcontainers:1.19.2"
+	testImplementation "org.testcontainers:junit-jupiter:1.19.2"
 
 }
 
