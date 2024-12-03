@@ -52,6 +52,20 @@ public class Admin extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
+    public static Admin of(AdminCreateRequest request, String urlName) {
+        return Admin.builder()
+                .email(request.getEmail())
+                .nickName(request.getNickName())
+                .name(request.getName())
+                .profileUrl(request.getProfileUrl())
+                .roleType(RoleType.PORT)
+                .password(request.getPassword())
+                .loginId(request.getLoginId())
+                .urlName(urlName)
+                .deleted(false)
+                .build();
+    }
+
 
     /* 생성 메서드 */
 

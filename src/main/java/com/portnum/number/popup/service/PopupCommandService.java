@@ -41,22 +41,7 @@ public class PopupCommandService {
     public PopupDetailResponse create(PopupCreateRequest request) {
         Admin findAdmin = validateAdmin(request.getAdminId());
 
-        Popup newPopup = Popup.builder()
-                .name(request.getName())
-                .address(request.getAddress())
-                .category(request.getCategory())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
-                .operatingHours(request.getOperatingHours())
-                .stat(request.getStat())
-                .point(request.getPoint())
-                .description(request.getDescription())
-                .detailDescription(request.getDetailDescription())
-                .mapUrl(request.getMapUrl())
-                .representImgUrl(request.getRepresentImgUrl())
-                .keywords(request.getKeywords())
-                .admin(findAdmin)
-                .build();
+        Popup newPopup = Popup.of(request, findAdmin);
 
         newPopup = popupRepository.save(newPopup);
 

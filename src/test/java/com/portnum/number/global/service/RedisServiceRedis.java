@@ -1,7 +1,7 @@
 package com.portnum.number.global.service;
 
 
-import com.portnum.number.TestContainerSupport;
+import com.portnum.number.RedisContainerSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "jasypt.encryptor.password=portNumber"
     }
 )
-public class RedisServiceTest extends TestContainerSupport {
+public class RedisServiceRedis extends RedisContainerSupport {
 
     @Autowired
     private RedisService redisService;

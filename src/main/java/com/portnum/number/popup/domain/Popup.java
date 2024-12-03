@@ -21,8 +21,8 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE Popup SET deleted = true WHERE popup_id = ?")
 @SQLRestriction("deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@AllArgsConstructor
 public class Popup extends BaseTimeEntity {
 
     @Id
@@ -76,6 +76,26 @@ public class Popup extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Boolean deleted = Boolean.FALSE;
+
+    public static Popup of(PopupCreateRequest request, Admin findAdmin) {
+        return Popup.builder()
+                .name(request.getName())
+                .address(request.getAddress())
+                .category(request.getCategory())
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
+                .operatingHours(request.getOperatingHours())
+                .stat(request.getStat())
+                .point(request.getPoint())
+                .description(request.getDescription())
+                .detailDescription(request.getDetailDescription())
+                .mapUrl(request.getMapUrl())
+                .representImgUrl(request.getRepresentImgUrl())
+                .keywords(request.getKeywords())
+                .admin(findAdmin)
+                .deleted(false)
+                .build();
+    }
 
     /* 연관관계 메서드 */
     public void addImage(Image image) {

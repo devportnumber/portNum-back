@@ -1,9 +1,5 @@
 package com.portnum.number;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -11,7 +7,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
-public abstract class TestContainerSupport {
+public abstract class RedisContainerSupport {
 
     private static final String REDIS_IMAGE = "redis:latest";
     private static final int REDIS_PORT = 6379;

@@ -44,16 +44,7 @@ public class AdminCommandService {
 
 //        Admin newAdmin = Admin.of(request, urlName);
 
-        Admin newAdmin = Admin.builder()
-                .email(request.getEmail())
-                .nickName(request.getNickName())
-                .name(request.getName())
-                .profileUrl(request.getProfileUrl())
-                .roleType(RoleType.PORT)
-                .password(request.getPassword())
-                .loginId(request.getLoginId())
-                .urlName(urlName)
-                .build();
+        Admin newAdmin = Admin.of(request, urlName);
 
         newAdmin = adminRepository.save(newAdmin);
 
